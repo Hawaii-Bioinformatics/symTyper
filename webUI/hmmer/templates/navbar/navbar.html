@@ -1,0 +1,66 @@
+{% url 'form' as form %}
+{% url 'index' id as index %}
+{% url 'clades' id as clades %}
+{% url 'unique' id as unique %}
+{% url 'perfect' id as perfect %}
+{% url 'shortnew' id as shortnew %}
+
+{% load custom_filters %}
+<!-- Responsive navbar -->
+<div class="container" id="navigation">
+    <div class="navbar navbar-inverse navbar-static" role="navigation">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <!-- Display three horizontal lines when navbar collapsed. -->
+                        <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    </button>
+                        <a class="navbar-brand" href="{{ form }}">SymTyper</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        {% if not done %}
+                        <li{% if request.path == documentation %} class="active"{% endif %}><a href="https://github.com/bingo11/symTyper/wiki/documentation">Documentation</a></li>
+                        <li{% if request.path == contact %} class="active"{% endif %}><a href="#">Contact</a></li>
+                        {% else %}
+                        <li{% if request.path == index %} class="active"{% endif %}><a href="{{ index }}">Home</a></li>
+                        <li{% if request.path == clades %} class="active"{% endif %}><a href="{{ clades }}">Clades</a></li>
+                        <li class="dropdown{% if request.path == subtypes %} active {% endif %}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Subtypes <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li{% if not unique_counts %} class="disabled"{% endif %}><a href="{% if unique_counts %} {{ unique }} {% else %}#{% endif %}">Unique</a></li>
+                            <li{% if not shortnew_counts %} class="disabled"{% endif %}><a href="{% if shortnew_counts %} {{ shortnew }} {% else %}#{% endif %}">ShortNew</a></li>
+                            <li{% if not perfect_counts %} class="disabled"{% endif %}><a href="{% if perfect_counts %} {{ perfect }} {% else %}#{% endif %}">Perfect</a></li>
+                        </ul>
+                        </li>
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Multiples <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            {% for key, value in multiples.items|sort %}
+                            <li{% if not value %} class="disabled"{% endif %}><a href="{% if value %}{% url 'corrected' id key %}{% else %}#{% endif %}">{{ key }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        </li>
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Trees <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            {% for key, value in trees.items|sort %}
+                            <li{% if not value %} class="disabled"{% endif %}><a href="{% if value %}{% url 'tree' id key %}{% else %}#{% endif %}">{{ key }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        </li>
+                        <li{% if request.path == biome %} class="active"{% endif %}><a href="{{ biome }}">Biome</a></li>
+                    {% endif %}
+                    </ul>
+                    <!--{% if id %}-->
+                    <!--<ul class="nav navbar-nav pull-right">-->
+                        <!--<li class="divider-vertical"></li>-->
+                        <!--<li><a href="{{ form }}">Upload</a></li>-->
+                    <!--</ul>-->
+                    <!--{% endif %}-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

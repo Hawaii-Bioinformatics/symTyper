@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load pagination %}
+
+{% block head %}
+<title>Subtypes</title>
+{% endblock %}
+
+
+{% block body %}
+
+{% url "unique" id as unique %}
+{% url "perfect" id as perfect %}
+{% url "shortnew" id as shortnew %}
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-8">
+            <h2>{{ title }}</h2>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="pull-right">
+
+            {% if request.path == unique %} 
+                <a href="{% url "dlUnique" id %}" class="download btn btn-primary">
+                    <span class="glyphicon glyphicon-download"></span>
+                        Download
+                </a>
+            {% elif request.path == perfect %} 
+                <a href="{% url "dlPerfect" id %}" class="download btn btn-primary">
+                    <span class="glyphicon glyphicon-download"></span>
+                        Download
+                </a>
+
+            {% elif request.path == shortnew %} 
+                <a href="{% url "dlShortnew" id %}" class="download btn btn-primary">
+                    <span class="glyphicon glyphicon-download"></span>
+                        Download
+                </a>
+
+            {% else %}
+            {% endif %}
+
+
+            </div>
+        </div>
+    </div>
+
+
+            <!--<h2><a href="#">{{ title }}</a></h2>-->
+
+            {% if counts %}
+            <div class="table-responsive">
+                <table class="table-bordered table-striped table-condensed cf">
+                    <thead>
+                        <tr>
+                            {% for header in headers %}
+                            <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in counts %}
+                        <tr class="{% cycle '' 'altrow' as alt  %}">
+                            {% for header in headers %}
+                            <td> {{ row | dictvalue:header }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if is_paginated %}{% pagination counts %}{% endif %}
+            {% else %}
+            <div class="col-sm-4 col-sm-offset-4">
+            <p>No Data Available</p>
+        </div>
+            {% endif %}
+</div>
+
+{% endblock %}

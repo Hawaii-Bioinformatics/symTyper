@@ -1,0 +1,3 @@
+SymTyper
+biopython >= 1.61
+ete2

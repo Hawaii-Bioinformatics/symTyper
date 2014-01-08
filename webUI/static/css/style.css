@@ -1,0 +1,45 @@
+body {
+    padding-bottom: 70px;
+    font-family: 'Roboto', serif;
+}
+
+h1, h2, h3 {
+    font-family: 'Roboto Slab', serif;
+    margin-bottom: 10px;
+    margin-top:10px;
+}
+
+.header {
+    background: url('../img/BI_Reef.jpg');
+    /*background: url('../img/Symtyper_Logo.ai');*/
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+    height: 150px;
+}
+
+.navbar {
+    border-radius: 0px;
+    font-size: 15px;
+}
+
+.download {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.navbar-inverse .navbar-inner {
+    background-color: #1B1B1B;
+    background-image: linear-gradient(to bottom, #222222, #111111);
+    background-repeat: repeat-x;
+    border-color: #252525;
+}
+
+.table-responsive {
+    max-height: 500px;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+}

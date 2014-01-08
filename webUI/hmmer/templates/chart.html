@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block body %}
+<div id="chart_div_{{ site }}"></div>
+
+<script type="text/javascript">
+
+// Load the Visualization API and the piechart package.
+google.load('visualization', '1.0', {'packages':['corechart'],"callback":drawChart});
+
+// Set a callback to run when the Google Visualization API is loaded.
+//google.setOnLoadCallback(drawChart);
+
+function drawChart() {
+
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'clade'); 
+    data.addColumn('number', 'amount'); 
+    data.addRows([
+            {% for key, value in detailed_counts.items %} 
+            ['{{ key }}',{{ value }}],
+            {% endfor %}
+            ]);
+
+    // Set chart options
+    var options = {
+        'backgroundColor': 'transparent',
+        'width':400,
+        'height':300};
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div_{{ site }}'));
+    chart.draw(data, options);
+}
+</script>
+{% endblock %}

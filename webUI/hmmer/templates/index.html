@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>SymTyper</title>
+{% if not done %}
+<meta http-equiv="refresh" content="30"/>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        {% if done %}
+        <div class="col-md-3">
+            <div class="well">
+                <ul class="nav sidebar">
+                    <li><a href="https://github.com/bingo11/symTyper/wiki/documentation">Documentation</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="{% url 'dlEverything' id %}">Download</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="well">
+                <h2>Summary</h2>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse interdum odio sed condimentum venenatis. Sed adipiscing, massa porta elementum bibendum, dolor augue consequat sapien, at pulvinar nisl ipsum vel nulla. Etiam sollicitudin, urna quis pretium vehicula, arcu eros ornare nisi, id sollicitudin quam sapien sed dolor. Curabitur sed diam dui. Phasellus a ante non turpis scelerisque convallis ullamcorper nec lacus. Aenean ipsum lacus, porttitor adipiscing cursus quis, aliquet eget dolor. Integer adipiscing eget nisl a hendrerit. Quisque leo magna, ultrices ac commodo vitae, commodo eu ligula. Nam sed tincidunt sem, in elementum ligula. Proin ultrices metus vel arcu ullamcorper congue. Donec a justo egestas, pellentesque nibh a, sagittis libero. Sed tristique, mi sit amet ultricies hendrerit, augue diam ultrices lorem, id tempus nunc dolor quis quam. Pellentesque urna orci, gravida id tempus quis, adipiscing at sapien.</p>
+
+                <p>Donec nec fermentum elit. Nunc gravida libero vel euismod faucibus. Sed nec orci aliquam, molestie leo sit amet, vestibulum lorem. Phasellus congue lobortis sodales. Nunc metus risus, commodo eget pretium ut, egestas vel ipsum. Vivamus ac nulla erat. Sed vestibulum nisi a nulla vulputate, sed accumsan mauris gravida. Phasellus varius arcu quam, at viverra nunc pharetra quis. Aliquam eget libero facilisis, aliquet justo nec, dapibus elit. Morbi nec viverra nisi. Proin laoreet pharetra lorem et posuere. Pellentesque adipiscing felis nisi, non euismod nisl dapibus ut.</p>
+
+                <p>Donec rutrum nec urna vitae iaculis. Maecenas urna justo, tempus vel laoreet id, feugiat in urna. Maecenas vel pellentesque mi. Quisque volutpat ligula eu nibh gravida adipiscing. Nunc a sem sit amet mi auctor porttitor. Ut viverra ultrices erat. Duis lobortis felis tincidunt orci sollicitudin adipiscing. Quisque luctus magna et dolor imperdiet, eget pretium elit sollicitudin. Sed porttitor ante ut lectus convallis ornare non eu justo.</p>
+
+                <p>Sed ac sem vel nisi porttitor aliquam a quis est. Proin vehicula sed justo ut molestie. Nulla facilisi. Proin ac nibh adipiscing, varius tellus vitae, dictum dui. Morbi eget sem dolor. Maecenas a vehicula lacus, eget molestie nulla. Ut interdum auctor nunc vitae vehicula. </p>
+
+                <p>Nunc tincidunt ante non ligula rutrum ullamcorper. Proin egestas elementum placerat. Vestibulum facilisis dolor a eros volutpat, eu interdum erat tempor. Fusce mattis, leo quis volutpat blandit, tortor lectus scelerisque augue, eget placerat diam diam id nisl. Vivamus dapibus est nec erat gravida rutrum. Etiam est lacus, commodo sed posuere ac, ultricies vitae massa. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. </p>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-md-6 col-md-offset-3">
+            <div class="well">
+                <p>SymTyper is Running and may take some time to finish. To see the
+                output when Symtyper is done please follow the link: (button does not work yet, copy paste it manually)<p>
+
+
+                <div class="input-group">
+                    <input type="text" readonly value="http:/{% url 'index' id %}" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button">Copy</button>
+                    </span>
+                </div><!-- /input-group -->
+                </br>
+
+
+
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" style="width: 35%">
+                        <span class="sr-only">35% Complete (success)</span>
+                    </div>
+                    <div class="progress-bar progress-bar-warning" style="width: 20%">
+                        <span class="sr-only">20% Complete (warning)</span>
+                    </div>
+                    <div class="progress-bar progress-bar-danger" style="width: 10%">
+                        <span class="sr-only">10% Complete (danger)</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
+

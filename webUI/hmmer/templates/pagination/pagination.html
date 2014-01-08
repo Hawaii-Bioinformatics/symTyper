@@ -1,0 +1,44 @@
+<ul class="pagination">
+        {% if page.has_previous %}
+        <li class="prev"><a href="?page={{ page.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+        <li class="disabled"><a>&laquo;</a></li>
+        {% endif %}
+
+        {% for pnum in begin %}
+        {% ifequal page.number pnum %}
+        <li class="active"><a>{{ pnum }}</a></li>
+        {% else %}
+        <li><a href="?page={{ pnum }}">{{ pnum }}</a></li>
+        {% endifequal %}
+        {% endfor %}
+
+        {% if middle %}
+        <li class="disabled"><a>...</a></li>
+        {% for pnum in middle %}
+        {% ifequal page.number pnum %}
+        <li class="active"><a>{{ pnum }}</a></li>
+        {% else %}
+        <li><a href="?page={{ pnum }}">{{ pnum }}</a></li>
+        {% endifequal %}
+        {% endfor %}
+        {% endif %}
+
+        {% if end %}
+        <li class="disabled"><a>...</a></li>
+        {% for pnum in end %}
+        {% ifequal page.number pnum %}
+        <li><a href="#">{{ pnum }}</a></li>
+        {% else %}
+        <li><a href="?page={{ pnum }}">{{ pnum }}</a></li>
+        {% endifequal %}
+        {% endfor %}
+        {% endif %}
+
+        {% if page.has_next %}
+        <li class="next"><a href="?page={{ page.next_page_number }}">&raquo;</a></li>
+        {% else %}
+        <li class="disabled"><a>&raquo;</a></li>
+        {% endif %}
+</ul>
+

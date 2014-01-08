@@ -1,0 +1,35 @@
+{% load navbar %}
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/fancyBox/jquery.fancybox.css">-->
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <!--<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-lightbox.min.css">-->
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto+Slab|Roboto">
+
+        <!--<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.fancybox.pack.js"></script>-->
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <!--<script src="{{ STATIC_URL }}js/bootstrap-lightbox.min.js"></script>-->
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+
+       {% block head %}{% endblock %}
+    </head>
+
+    <body>
+        <div class="container" id="header">
+            <h1 class="header"></h1>
+        </div>
+        {% navbar id %}
+        {% block navbar %}{%endblock %}
+        {% block body %}{% endblock %}
+        {% block footer %}{% endblock %}
+    </body>
+
+</html>

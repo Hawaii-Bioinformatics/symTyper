@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load pagination %}
+
+{% block head %}
+<title>Multiples</title>
+{% endblock %}
+
+
+
+{% block body %}
+
+{% url 'corrected' id file as corrected %}
+{% url 'resolved' id file as resolved %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-6">
+            <h2><a href="#">Multiples-{{ file }}</a></h2>
+        </div>
+
+        <div class="col-xs-6">
+        <!--Download Button Goes Here -->
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs" id="myTab">
+        <li{% if request.path == corrected %} %} class="active"{% endif %}><a href="{% url 'corrected' id file %}">Corrected</a></li>
+        <li{% if request.path == resolved %} class="active"{% endif %}><a href="{% url 'resolved' id file %}">Resolved</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade in active">
+            <!--<h3><a href="#">Corrected</a></h3>-->
+            {% if counts %} 
+            <!--<div id="flip-scroll">-->
+                <div class="table-responsive">
+                    <table class="table-bordered table-condensed table-striped cf"> 
+                        <thead>
+                            <tr class="{% cycle '' 'altrow' as alt %}">
+                                {% for header in  headers %}
+                                <th>{{ header }}</th>
+                                {% endfor %}
+                                <th>Sample Distribution</th>
+                                <th>Subtype Distribution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in counts %}
+                            <tr class="{% cycle alt  %}">
+
+                                {% for header in headers %}
+                                <td> {{ row| dictvalue:header }}  </td>
+                                {% endfor %}
+                                <td><div style="width: 400px; height: 300px; margin: 0 auto;" class="thumbnail" id="breakdown_{{ forloop.counter }}"></div></td>
+                                <td><div style="width: 400px; height: 300px; margin: 0 auto;" class="thumbnail" id="subtypes_{{ forloop.counter }}"></div></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% pagination counts%}
+
+
+                {% else %}
+                <div class="col-sm-4 col-sm-offset-4">
+                    <h1>No Data Available</h1>
+                </div>
+
+                {% endif %}
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+    <script type="text/javascript">
+
+        // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {'packages':['corechart'],"callback":drawCharts});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    //google.setOnLoadCallback(drawCharts);
+
+    function drawCharts() {
+        {% for row in breakdown %}
+        drawChart_breakdown_{{ forloop.counter }}();
+        {% endfor %}
+
+        {% for row in subtypes %}
+        drawChart_subtypes_{{ forloop.counter }}();
+        {% endfor %}
+
+    }
+
+{% for row in breakdown %}
+function drawChart_breakdown_{{ forloop.counter }}() {
+
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'clade'); 
+    data.addColumn('number', 'amount'); 
+    data.addRows([
+            {% for key, value in row.items %} 
+            ['{{ key }}',{{ value }}],
+            {% endfor %}
+            ]);
+
+    // Set chart options
+    var options = {
+        'backgroundColor': 'transparent',
+        'width':400,
+        'height':300};
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.PieChart(document.getElementById('breakdown_{{ forloop.counter }}'));
+    chart.draw(data, options);
+}
+{% endfor %}
+
+
+
+{% for row in subtypes %}
+function drawChart_subtypes_{{ forloop.counter }}() {
+
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'clade'); 
+    data.addColumn('number', 'amount'); 
+    data.addRows([
+            {% for key, value in row.items %} 
+            ['{{ key }}',{{ value }}],
+            {% endfor %}
+            ]);
+
+    // Set chart options
+    var options = {
+        'backgroundColor': 'transparent',
+        'width':400,
+        'height':300};
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.PieChart(document.getElementById('subtypes_{{ forloop.counter }}'));
+    chart.draw(data, options);
+}
+{% endfor %}
+
+</script>
+
+
+{% endblock %}

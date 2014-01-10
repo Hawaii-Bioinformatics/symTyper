@@ -23,8 +23,10 @@ version="0.01"
 FORMAT = "%(asctime)-15s  %(message)s"
 
 ### TODO add this to configuration file
-hmmer_db =  "/home/hputnam/Clade_Alignments/HMMER_ITS2_DB/All_Clades.hmm"
-blast_db =  "/home/hputnam/Clade_Alignments/blast_DB/ITS2_Database_04_23_13.fas"
+hmmer_db =  os.path.join("/", "home","celery","symtyper","dbases", "HMMER_ITS2_DB", "All_Clades.hmm")
+#"/home/hputnam/Clade_Alignments/HMMER_ITS2_DB/All_Clades.hmm"
+blast_db =  os.path.join("/", "home","celery","symtyper","dbases", "blast_DB", "ITS2_Database_04_23_13.fas")
+#"/home/hputnam/Clade_Alignments/blast_DB/ITS2_Database_04_23_13.fas"
 
 logging.basicConfig(format=FORMAT, level=logging.DEBUG)
 
@@ -95,7 +97,7 @@ def processClades(args, pool=Pool(processes=1)):
    print os.path.join(parsedHmmerOutputDir, samples[0])
    print args.evalue
    
-   raw_input("press enter to contunue")
+   #raw_input("press enter to contunue")
    #for sample in samples:
    #   cp = CladeParser( os.path.join(hmmerOutputDir, sample+".out"), os.path.join(parsedHmmerOutputDir, sample), args.evalue)
    #   runInstance(cp)
@@ -214,8 +216,8 @@ def resolveMultipleHits(args, pool):
    makeDirOrdie(os.path.join(args.clustersDir, repsDir, repsClustersDir))
    runInstance(ProgramRunner("CLUSTER_COMMAND", [os.path.join(args.clustersDir, repsDir, repsFasta), os.path.join(args.clustersDir, repsDir, repsClustersDir, repsFasta)]))
    logging.debug("resolveMultipleHits: done clustering the reps %s" % os.path.join(args.clustersDir, repsDir, repsFasta))
-   cdHitParser =  CD_HitParser("data/samples.ids", "data/resolveMultiples/Reps/Clusters/allReps.fasta.clstr", 
-                               "data/resolveMultiples/clusters/", "data/blastResults/MULTIPLE/",)
+   cdHitParser =  CD_HitParser("samples.ids", "resolveMultiples/Reps/Clusters/allReps.fasta.clstr", 
+                               "resolveMultiples/clusters/", "blastResults/MULTIPLE/",)
    
    makeDirOrdie(os.path.join(args.clustersDir, correctedResultsDir))
    cdHitParser.run(os.path.join(args.clustersDir, correctedResultsDir)) 
@@ -262,7 +264,7 @@ def main(argv):
    parser_clade = subparsers.add_parser('clade')
    parser_clade.add_argument('-s', '--samplesFile', type=argparse.FileType('r'), required=True, help=" Samples file  ")
    parser_clade.add_argument('-i', '--inFile', type=argparse.FileType('r'), required=True, help=" Input fasta file ")
-   parser_clade.add_argument('-e', '--evalue', type=float, default=1e-20)
+   parser_clade.add_argument('-e', '--evalue', type=float, default=1e-05)
    parser_clade.add_argument('-d', '--evalDifference', type=float, default=1e5, help="Eval difference between first and second hits")
    parser_clade.set_defaults(func=processClades)
 

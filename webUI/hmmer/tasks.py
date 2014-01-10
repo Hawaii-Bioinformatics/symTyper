@@ -10,19 +10,20 @@ import os
 
 
 @task(ignore_results=True)
-def handleForm(fasta, sample, uid):
-    # parentDir):
+def handleForm(fasta, sample, evalue, uid):
     parentDir = os.path.join(settings.SYMTYPER_HOME, uid)
-    #print parentDir
-    imageDir = os.path.join(settings.PROJECT_ROOT, 'static', 'img', uid)
-    #print imageDir
-
-    #with open(os.path.join(parentDir, 'log')) as log:
+    imageDir = os.path.join(settings.STATIC_ROOT, 'img', uid)
     os.chdir(parentDir)
-    os.system("""python /home/taylor/symTyper/symTyper.py --threads 12 clade --i %s -s %s""" % (fasta, sample))
-#    log.write('finished clades/n')
-    os.system("""python /home/taylor/symTyper/symTyper.py  -t 3 subtype -H data/hmmer_hits/ -s %s -b data/blast_output/ -r data/blastResults/ -f data/fasta"""%(sample))
-    os.system("""python /home/taylor/symTyper/symTyper.py  -t 3 resolveMultipleHits -s %s -m data/blastResults/MULTIPLE/fasta/ -c data/resolveMultiples/"""%(sample))
-    os.system("""python /home/taylor/symTyper/symTyper.py  -t 3 builPlacementTree -c data/resolveMultiples/correctedMultiplesHits/corrected -n /home/taylor/Clade_Trees/ -o data/placementInfo""")
+    os.environ['PATH'] += os.pathsep + settings.BIN_PATH
+    os.system("""chmod 775 %s"""%(parentDir)) 
+    os.system("""%s --threads %s clade --i %s -s %s""" % (settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, fasta, sample))
+    os.system("""%s  -t %s subtype -H hmmer_hits/ -s %s -b blast_output/ -r blastResults/ -f fasta """%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, sample))
+    os.system("""%s  -t %s resolveMultipleHits -s %s -m blastResults/MULTIPLE/fasta/ -c resolveMultiples/"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, sample))
+    os.system("""xvfb-run  %s  -t %s builPlacementTree -c resolveMultiples/correctedMultiplesHits/corrected -n /home/celery/symtyper/dbases/clades_phylogenies/ -o placementInfo"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS))
     os.makedirs(imageDir)
-    os.system("""cp -r %s %s""" % (os.path.join(parentDir,'data', 'placementInfo'), imageDir))
+    os.system("""chgrp -R www-data %s"""%(parentDir))
+    os.system("""cp -r %s %s""" % (os.path.join(parentDir, 'placementInfo'), imageDir))
+    os.system("""chmod -R 775 %s"""%(imageDir))
+    os.system("""chgrp -R www-data %s"""%(imageDir))
+
+    

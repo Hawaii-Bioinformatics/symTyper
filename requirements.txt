@@ -1,3 +1,5 @@
-SymTyper
 biopython >= 1.61
 ete2
+django-widget-tweaks
+South
+django-celery

@@ -8,14 +8,14 @@
 {% block body %}
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-7">
             <div class="well"> <div class="col-md-12">
                     <form role="form" enctype="multipart/form-data" method="post" action=".">
 
                         <div class="form-group{% if form.fasta_File.errors %} has-error{% endif %}">
                             <label for="id_fasta_File">Fasta File </label>
                             <!--<a class="info" href="#" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="right" data-toggle="popover" data-trigger="hover">-->
-                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="top" data-toggle="popover" data-trigger="hover"></span>
+                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="Valid Fasta format in which the sequence IDs match those found in the id file" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
                             <!--</a>-->
 
 
@@ -44,7 +44,7 @@
 
                         <div class="form-group{% if form.sample_File.errors %} has-error{% endif %}">
                             <label for="id_sample_File">Id File </label>
-                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="top" data-toggle="popover" data-trigger="hover"></span>
+                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="A listing of sample ids" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
 
                             <!--<div class="input-group">-->
                                 <!--<span class="input-group-btn">-->
@@ -69,7 +69,7 @@
                             {% endif %}
 
                         </div>
-
+<!--
                         <div class="form-group">
                             <label for="similarity">Similarity</label>
                             <div class="input-group">
@@ -77,10 +77,16 @@
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="disabledInput">Eval</label>
-                            <input type="text" class="form-control" id="disabledInput" placeholder="Enter Eval" disabled>
+-->
+                        <div class="form-group{% if form.evalue.errors %} has-error{% endif %}">
+                            <label for="e_value">E-value </label>
+                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="E-value utilized by blast" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
+			    {{form.evalue}}
+                        </div>
+                        <div class="form-group{% if form.evalDiff.errors %} has-error{% endif %}">
+                            <label for="e_valueDiff">E-value Difference</label>
+                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="?????" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
+			    {{form.evalDiff}}
                         </div>
 
 
@@ -91,7 +97,7 @@
             </div>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-md-5">
             <div class="well">
                 <h2>Lorem Ipsum</h2>
                 <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vel ligula augue. In sed nunc non dui congue hendrerit. Proin quis ligula ornare massa sollicitudin mattis. In quis arcu vitae nisi consectetur interdum. Curabitur sodales massa at arcu vulputate interdum tempor eu massa. Morbi eget lorem ipsum. Aliquam egestas rhoncus venenatis.</p>

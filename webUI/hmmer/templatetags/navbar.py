@@ -14,16 +14,16 @@ def navbar(context, id):
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
 
     ## Subtypes
-    output = os.path.join(settings.SYMTYPER_HOME, str(id), "data", "blastResults")
+    output = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults")
     unique_counts, unique_headers = csv2list(os.path.join(output, "UNIQUE_subtypes_count.tsv"))
     shortnew_counts, shortnew_headers = csv2list(os.path.join(output, "SHORTNEW_subtypes_count.tsv"))
     perfect_counts, perfect_headers = csv2list(os.path.join(output, "PERFECT_subtypes_count.tsv"))
 
     ## Multiples
-    cPath = os.path.join(settings.SYMTYPER_HOME, str(id), "data", "resolveMultiples", "correctedMultiplesHits", "corrected")
-    rPath = os.path.join(settings.SYMTYPER_HOME, str(id), "data", "resolveMultiples", "correctedMultiplesHits", "resolved")
+    cPath = os.path.join(settings.SYMTYPER_HOME, str(id), "resolveMultiples", "correctedMultiplesHits", "corrected")
+    rPath = os.path.join(settings.SYMTYPER_HOME, str(id), "resolveMultiples", "correctedMultiplesHits", "resolved")
     ## Trees
-    tPath = os.path.join(settings.SYMTYPER_HOME, str(id), "data", "placementInfo")
+    tPath = os.path.join(settings.SYMTYPER_HOME, str(id), "placementInfo")
 
     for letter in letters:
 

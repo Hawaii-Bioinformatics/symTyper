@@ -13,6 +13,13 @@ class symTyperTask(models.Model):
 class InputForm(forms.Form):
     fasta_File = forms.FileField()
     sample_File = forms.FileField()
+    evalue = forms.FloatField(label = "E-Value", initial = 1e-05, )
+    evalDiff = forms.FloatField(label = "E-value Difference", initial = 1e5)
+ 
+    def __init__(self, *args, **kwargs):
+       super(InputForm, self).__init__(*args, **kwargs)
+       self.fields['evalue'].widget.attrs['readonly'] = True
+       self.fields['evalDiff'].widget.attrs['readonly'] = True
 
     def clean_fasta_File(self):
         data = self.cleaned_data['fasta_File']

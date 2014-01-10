@@ -1,3 +1,4 @@
 hmmer
 Legacy Blast
 cd-hit
+xvfb (virtual x server apt-get install xvfb)

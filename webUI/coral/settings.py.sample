@@ -5,7 +5,7 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 
 PROJECT_ROOT = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -16,19 +16,20 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(PROJECT_ROOT, 'db/event_calendar.db'),  # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'symtyper',  # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
+        'USER': ,
+        'PASSWORD': ,
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
+        'OPTIONS': {'init_command': 'SET storage_engine=INNODB'},
     }
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -55,22 +56,22 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/var/www/html/media/symtyper/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = 'http://courge.ics.hawaii.edu/media/symtyper/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = '/var/www/html/static/symtyper/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = 'http://courge.ics.hawaii.edu/static/symtyper/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -89,7 +90,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'q#b4+$)v^$#4@n+nmld%0bo1=qz50b_&4ow=or^bm+e4ozgkdw'
+SECRET_KEY = CHANGE_THIS_TO_A_NEW_RANDOM_KEY
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -171,19 +172,21 @@ TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
 )
 
-SYMTYPER_HOME = os.path.join(PROJECT_ROOT, "hmmer", "files") # Where Symtyper output goes
-SYMTYPER_IMG = os.path.join(PROJECT_ROOT, "static", "img", "placement_trees") # Where placement tree image directory gets moved to
+SYMTYPER_HOME = os.path.join() # Where Symtyper output goes
+SYMTYPER_IMG = os.path.join() # Where placement tree image directory gets moved to
+SYMTYPER_THREADS = 6
+
+BIN_PATH=os.path.join()
+SYMTYPER_PATH=os.path.join(BIN_PATH, "symTyper.py")
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+CELERY_TASK_RESULT_EXPIRES = 3600
 
 import djcelery
 djcelery.setup_loader()
+BROKER_HOST = 
+BROKER_PORT = 5672
+BROKER_USER = 
+BROKER_PASSWORD = 
+BROKER_VHOST = 
 
-#BROKER_URL = 'amqp://testuser:testpass@localhost:5672/testvhost'
-BROKER_URL = 'amqp://worker:r@bb1t+w0rker+run@localhost:5672/portal'
-#BROKER_HOST = "localhost"
-#BROKER_PORT= 5672
-#BROKER_USER= "testuser"
-#BROKER_PASSWORD= "testpass"
-#BROKER_VHOST = "testvhost"
-
-# not needed unless want to set up periodic tasks
-#CELERYBEAT_SCHEDULER ="djcelery.schedulers.DatabaseScheduler"

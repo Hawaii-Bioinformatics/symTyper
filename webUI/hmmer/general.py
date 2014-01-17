@@ -225,7 +225,7 @@ def servFile(request, ready, filename, fPath, fsize):
     return response
 
 
-def taskReady(celeryID, redirect="error"):
+def taskReady(jobObj, redirect="error"):
     """Checks if celery task is ready.
 
     Args:
@@ -237,12 +237,18 @@ def taskReady(celeryID, redirect="error"):
         False,False: celery task is still processing.
 
     """
-    task = AsyncResult(celeryID)
-
-    if task.ready():
-        if task.successful():
-            return True, None
-        else:
-            return False, HttpResponseRedirect(reverse(redirect))
+    #task = AsyncResult(jobObj.celeryUID)
+    if jobObj.state == symTyperTask.DONE:
+        return True, None
+    elif jobObj.state == symTyperTask.ERROR:
+        return False, HttpResponseRedirect(reverse(redirect))
     else:
         return False, None
+
+    # if task.ready():
+    #     if task.successful():
+    #         return True, None
+    #     else:
+    #         return False, HttpResponseRedirect(reverse(redirect))
+    # else:
+    #     return False, None

@@ -6,9 +6,19 @@ from django.contrib import admin
 # Create your models here.
 
 class symTyperTask(models.Model):
+    NOT_DONE = 0
+    DONE = 1
+    ERROR = 2
+    STATES=  ( (NOT_DONE, "Not Done",),
+               (DONE, "Done",),
+               (ERROR, "Error",),
+             )
+
     celeryUID = models.TextField(null=True, blank=True)
     UID = models.TextField(null=True, blank=True)
+    state = models.IntegerField(default = NOT_DONE, choices = STATES, blank = False, null = False)
 
+    
 
 class InputForm(forms.Form):
     fasta_File = forms.FileField()
@@ -38,4 +48,4 @@ class AdminSymTyperTask(admin.ModelAdmin):
     list_display = ['celeryUID', 'UID']
 
 
-admin.site.register(symTyperTask, AdminSymTyperTask)
+#admin.site.register(symTyperTask, AdminSymTyperTask)

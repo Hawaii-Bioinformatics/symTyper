@@ -11,8 +11,13 @@ import os
 
 @task(ignore_results=True)
 def handleForm(fasta, sample, evalue, uid):
+    sym_task = symTyperTask.objects.get(UID=uid)
+    sym_task.celeryUID = current_task.request.id
+    sym_task.save()
+
     parentDir = os.path.join(settings.SYMTYPER_HOME, uid)
     imageDir = os.path.join(settings.STATIC_ROOT, 'img', uid)
+
     os.chdir(parentDir)
     os.environ['PATH'] += os.pathsep + settings.BIN_PATH
     os.system("""chmod 775 %s"""%(parentDir)) 
@@ -26,4 +31,7 @@ def handleForm(fasta, sample, evalue, uid):
     os.system("""chmod -R 775 %s"""%(imageDir))
     os.system("""chgrp -R www-data %s"""%(imageDir))
 
+    sym_task = symTyperTask.objects.get(UID=uid)
+    sym_task.state = symTyperTask.DONE
+    sym_task.save()
     

@@ -32,6 +32,7 @@ def inputFormDisplay(request, template='upload.html'):
             # create UID
             sym_task = symTyperTask.objects.create()
             sym_task.UID = str(sym_task.id) + '.' + str(time.time())
+            sym_task.save()
             parentDir = os.path.join(settings.SYMTYPER_HOME, sym_task.UID)
 
             os.makedirs(parentDir)
@@ -43,9 +44,8 @@ def inputFormDisplay(request, template='upload.html'):
             writeFile(request.FILES['sample_File'], samples)
 
             task = handleForm.delay(fasta, samples, form.cleaned_data['evalue'], sym_task.UID)
-
-            sym_task.celeryUID = task.id
-            sym_task.save()
+            #sym_task.celeryUID = task.id
+            #sym_task.save()
 
             return HttpResponseRedirect(reverse("index", args=[sym_task.UID]))
     else:
@@ -66,7 +66,7 @@ def clades(request, id, template='clades.html'):
         return HttpResponseRedirect(reverse("form"))
 
     output = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         #dirs = [d for d in os.listdir(output)
                 #if os.path.isdir(os.path.join(output, d))]
@@ -148,7 +148,7 @@ def unique(request, id, template='subtypes.html'):
         return HttpResponseRedirect(reverse("form"))
 
     output = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         counts, headers = csv2list(os.path.join(output, "UNIQUE_subtypes_count.tsv"))
         #shortnew_counts, shortnew_headers = csv2list(os.path.join(output, "SHORTNEW_subtypes_count.tsv"))
@@ -183,7 +183,7 @@ def shortnew(request, id, template='subtypes.html'):
         return HttpResponseRedirect(reverse("form"))
 
     output = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         counts, headers = csv2list(os.path.join(output, "SHORTNEW_subtypes_count.tsv"))
         #perfect_counts, perfect_headers = csv2list(os.path.join(output, "PERFECT_subtypes_count.tsv"))
@@ -211,7 +211,7 @@ def perfect(request, id, template='subtypes.html'):
         return HttpResponseRedirect(reverse("form"))
 
     output = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         counts, headers = csv2list(os.path.join(output, "PERFECT_subtypes_count.tsv"))
     elif redirect:
@@ -238,7 +238,7 @@ def multiplesCorrected(request, id, file, template='multiples.html'):
         return HttpResponseRedirect(reverse("form"))
 
     corrected = os.path.join(settings.SYMTYPER_HOME, str(id), "resolveMultiples", "correctedMultiplesHits", "corrected")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         corrected_counts, corrected_headers, corrected_breakdown, corrected_subtypes = multiplesCsv(os.path.join(corrected, file))
 
@@ -287,7 +287,7 @@ def multiplesResolved(request, id, file, template='multiples.html'):
         return HttpResponseRedirect(reverse("form"))
 
     resolved = os.path.join(settings.SYMTYPER_HOME, str(id), "resolveMultiples", "correctedMultiplesHits", "resolved")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
 
         resolved_counts, resolved_headers, resolved_breakdown, resolved_subtypes = multiplesCsv(os.path.join(resolved, file))
@@ -336,7 +336,7 @@ def tree(request, id, file, template='tree.html'):
         return HttpResponseRedirect(reverse("form"))
 
     output = os.path.join(settings.SYMTYPER_HOME, str(id), "placementInfo")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         counts, headers = treeCsv(os.path.join(output, file, "treenodeCladeDist.tsv"))
         if counts != None:
@@ -374,7 +374,7 @@ def chart(request, id, site):
         return HttpResponseRedirect(reverse("form"))
 
     output = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         detailed_counts = searchTable(os.path.join(output, 'DETAILED_counts.tsv'),site)
     elif redirect:
@@ -394,7 +394,7 @@ def index(request, id, template='index.html'):
         return HttpResponseRedirect(reverse("form"))
 
     #output = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput")
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         done = True
     elif redirect:
@@ -415,7 +415,7 @@ def dlAll(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput","ALL_counts.tsv")
         fsize = os.stat(fPath).st_size
@@ -433,7 +433,7 @@ def dlDetailed(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput","DETAILED_counts.tsv")
         fsize = os.stat(fPath).st_size
@@ -451,7 +451,7 @@ def dlPerfect(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults","PEFECT_subtypes_count.tsv")
         fsize = os.stat(fPath).st_size
@@ -469,7 +469,7 @@ def dlUnique(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults","UNIQUE_subtypes_count.tsv")
         fsize = os.stat(fPath).st_size
@@ -487,7 +487,7 @@ def dlShortnew(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults","SHORTNEW_subtypes_count.tsv")
         fsize = os.stat(fPath).st_size
@@ -505,7 +505,7 @@ def dlClades(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         path = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput")
         return servZip(request, path)
@@ -521,7 +521,7 @@ def dlSubtypes(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         path = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults")
         return servZip(request, path)
@@ -537,7 +537,7 @@ def dlMultiples(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         path = os.path.join(settings.SYMTYPER_HOME, str(id), "resolveMultiples", "correctedMultiplesHits")
         return servZip(request, path)
@@ -553,7 +553,7 @@ def dlTree(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         path = os.path.join(settings.SYMTYPER_HOME, str(id), "placementInfo")
         return servZip(request, path)
@@ -568,7 +568,7 @@ def dlEverything(request, id):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    ready, redirect = taskReady(sym_task.celeryUID)
+    ready, redirect = taskReady(sym_task)
     if ready:
         path = os.path.join(settings.SYMTYPER_HOME, str(id))
         return servZip(request, path)

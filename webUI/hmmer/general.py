@@ -239,10 +239,19 @@ def taskReady(jobObj, redirect="error"):
         False,False: celery task is still processing.
 
     """
-    #task = AsyncResult(jobObj.celeryUID)
+
+    task = AsyncResult(jobObj.celeryUID)
+    if task.ready():
+        if task.successful():
+            return True, None
+        else:
+            return False, HttpResponseRedirect(reverse(redirect))
+    # In the case the task isn't ready, we don't really have a clear idea why.
+    # It is possible the task has left the celery task table, and there for is marked as Pending,
+    # but it is really done.  We store an alternate flag in our own tables to manage this.
     if jobObj.state == symTyperTask.DONE:
         return True, None
-    elif jobObj.state == symTyperTask.ERROR:
+    elif jobObj.state == symTyperTask.ERROR :
         return False, HttpResponseRedirect(reverse(redirect))
     else:
         return False, None

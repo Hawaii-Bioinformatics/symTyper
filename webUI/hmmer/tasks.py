@@ -11,8 +11,9 @@ import os
 
 @task(ignore_results=True)
 def handleForm(fasta, sample, evalue, uid):
-    sym_task = symTyperTask.objects.get(UID=uid)
+    sym_task = symTyperTask.objects.get(UID = uid)
     sym_task.celeryUID = current_task.request.id
+    sym_task.state = symTyperTask.RUNNING
     sym_task.save()
 
     parentDir = os.path.join(settings.SYMTYPER_HOME, uid)

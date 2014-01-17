@@ -10,11 +10,9 @@ h1, h2, h3 {
 }
 
 .header {
-    background: url('../img/BI_Reef.jpg');
-    /*background: url('../img/Symtyper_Logo.ai');*/
+    background: url('../img/banner.png');
     background-size: cover;
     background-position: center;
-    opacity: 0.5;
     height: 150px;
 }
 

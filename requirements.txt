@@ -3,3 +3,4 @@ ete2
 django-widget-tweaks
 South
 django-celery
+django-htmlmin

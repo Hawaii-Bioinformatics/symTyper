@@ -6,13 +6,15 @@ Created on Jul 5, 2013
 from celery.task import task
 from django.conf import settings
 import os
+from models import symTyperTask
+
 #from subprocess import call
 
 
 @task(ignore_results=True)
 def handleForm(fasta, sample, evalue, uid):
     sym_task = symTyperTask.objects.get(UID = uid)
-    sym_task.celeryUID = current_task.request.id
+    sym_task.celeryUID = handleForm.request.id
     sym_task.state = symTyperTask.RUNNING
     sym_task.save()
 

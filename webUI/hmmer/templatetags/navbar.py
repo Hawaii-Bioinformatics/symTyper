@@ -42,7 +42,7 @@ def navbar(context, id):
     if id:
         sym_task = symTyperTask.objects.get(UID=id)
 
-        ready, redirect = taskReady(sym_task.celeryUID)
+        ready, redirect = taskReady(sym_task)
         if ready:
             done = True
 

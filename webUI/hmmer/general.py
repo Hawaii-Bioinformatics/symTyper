@@ -8,6 +8,8 @@ import os
 import tempfile
 import zipfile
 
+from models import symTyperTask
+
 
 def writeFile(origin, destination):
     """Writes origin file to new destination.

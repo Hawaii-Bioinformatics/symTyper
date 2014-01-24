@@ -5,14 +5,14 @@ Created on Jul 5, 2013
 '''
 from celery.task import task
 from django.conf import settings
-import os
 from models import symTyperTask
-
+from forms import InputForm
+import os
 #from subprocess import call
 
 
 @task(ignore_results=True)
-def handleForm(fasta, sample, evalue, uid):
+def handleForm(fasta, sample, inputform, uid):
     sym_task = symTyperTask.objects.get(UID = uid)
     sym_task.celeryUID = handleForm.request.id
     sym_task.state = symTyperTask.RUNNING
@@ -30,9 +30,12 @@ def handleForm(fasta, sample, evalue, uid):
     os.system("""xvfb-run  %s  -t %s builPlacementTree -c resolveMultiples/correctedMultiplesHits/corrected -n /home/celery/symtyper/dbases/clades_phylogenies/ -o placementInfo"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS))
     os.makedirs(imageDir)
     os.system("""chgrp -R www-data %s"""%(parentDir))
-    os.system("""cp -r %s %s""" % (os.path.join(parentDir, 'placementInfo'), imageDir))
-    os.system("""chmod -R 775 %s"""%(imageDir))
-    os.system("""chgrp -R www-data %s"""%(imageDir))
+    os.system("""ln -s %s %s""" % (os.path.join(parentDir, 'placementInfo'), imageDir))
+    os.chdir(settings.SYMTYPER_HOME)
+    os.system("""zip -r %s.zip %s -x@%s"""%(uid, parentDir, settings.ZIP_EXCLUDE))
+    os.system("""mv %s.zip %s"""%(uid, os.path.join(parentDir, "all.zip")) )
+    #os.system("""chmod -R 775 %s"""%(imageDir))
+    #os.system("""chgrp -R www-data %s"""%(imageDir))
 
     sym_task = symTyperTask.objects.get(UID=uid)
     sym_task.state = symTyperTask.DONE

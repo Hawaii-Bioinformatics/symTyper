@@ -14,22 +14,9 @@
 
                         <div class="form-group{% if form.fasta_File.errors %} has-error{% endif %}">
                             <label for="id_fasta_File">Fasta File </label>
-                            <!--<a class="info" href="#" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." data-placement="right" data-toggle="popover" data-trigger="hover">-->
                             <span class="info glyphicon glyphicon-info-sign pull-right" data-content="Valid Fasta format in which the sequence IDs match those found in the id file" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
-                            <!--</a>-->
 
-
-                            <!--<div class="input-group">-->
-                                <!--<span class="input-group-btn">-->
-                                    <!--<span class="btn btn-primary btn-file">-->
-                                        <!--Browse...-->
-                                        <!--{{ form.fasta_File }}-->
-                                        <!--</span>-->
-                                    <!--</span>-->
-                                <!--<input class="form-control" type="text" readonly="">-->
-                                <!--</div>-->
                             {{ form.fasta_File }}
-                            <!--<p class="help-block">Fasta File Goes Here.</p>-->
 
                             {% if form.fasta_File.errors %}
                             <span class="help-block">
@@ -46,17 +33,7 @@
                             <label for="id_sample_File">Id File </label>
                             <span class="info glyphicon glyphicon-info-sign pull-right" data-content="A listing of sample ids" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
 
-                            <!--<div class="input-group">-->
-                                <!--<span class="input-group-btn">-->
-                                    <!--<span class="btn btn-primary btn-file"> -->
-                                        <!--Browse...-->
-                                        <!--{{ form.sample_File }}-->
-                                        <!--</span>-->
-                                    <!--</span>-->
-                                <!--<input class="form-control" type="text" readonly="">-->
-                                <!--</div>-->
                             {{ form.sample_File }}
-                            <!--<p class="help-block">Id File Goes Here.</p>-->
 
                             {% if form.sample_File.errors %}
                             <span class="help-block">
@@ -69,24 +46,36 @@
                             {% endif %}
 
                         </div>
-<!--
-                        <div class="form-group">
-                            <label for="similarity">Similarity</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="similarity" placeholder="Enter Similarity" disabled>
-                                <span class="input-group-addon">%</span>
-                            </div>
-                        </div>
--->
-                        <div class="form-group{% if form.evalue.errors %} has-error{% endif %}">
-                            <label for="e_value">E-value </label>
+
+			<fieldset>
+			  <legend>Clade:</legend>
+                       <div class="form-group{% if form.clade_evalue.errors %} has-error{% endif %}">
+                            <label for="clade_e_value">E-value </label>
                             <span class="info glyphicon glyphicon-info-sign pull-right" data-content="E-value utilized by blast" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
-			    {{form.evalue}}
+			    {{form.clade_evalue}}
                         </div>
-                        <div class="form-group{% if form.evalDiff.errors %} has-error{% endif %}">
-                            <label for="e_valueDiff">E-value Difference</label>
+                        <div class="form-group{% if form.clade_evalDiff.errors %} has-error{% endif %}">
+                            <label for="clade_e_valueDiff">E-value Difference</label>
                             <span class="info glyphicon glyphicon-info-sign pull-right" data-content="?????" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
-			    {{form.evalDiff}}
+			    {{form.clade_evalDiff}}
+                        </div>
+			</fieldset>
+
+			<fieldset>
+			  <legend>Subtype:</legend>
+			  <div class="form-group{% if form.subtype_evalue.errors %} has-error{% endif %}">
+                            <label for="subtype_evalue">E-value</label>
+                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="?????" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
+			    {{form.subtype_evalue}}
+                          </div>
+			</fieldset>
+
+			<fieldset>
+			  <legend>Resolve Multiple Hits:</legend>
+                        <div class="form-group{% if form.resolveMulti_similarity.errors %} has-error{% endif %}">
+                            <label for="resolveMulti_similarity">Similarity</label>
+                            <span class="info glyphicon glyphicon-info-sign pull-right" data-content="?????" data-placement="top" data-toggle="popover" data-trigger="hover"></span>
+			    {{form.resolveMulti_similarity}}
                         </div>
 
 

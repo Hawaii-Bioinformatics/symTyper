@@ -11,7 +11,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 #from celery.result import AsyncResult
 
 from general import writeFile, searchTable, csv2list, treeCsv, multiplesCsv, servFile, taskReady, servZip
-from models import InputForm, symTyperTask
+from forms import InputForm
+from models import  symTyperTask
 from tasks import handleForm
 
 import os
@@ -43,7 +44,7 @@ def inputFormDisplay(request, template='upload.html'):
             writeFile(request.FILES['fasta_File'], fasta)
             writeFile(request.FILES['sample_File'], samples)
 
-            task = handleForm.delay(fasta, samples, form.cleaned_data['evalue'], sym_task.UID)
+            task = handleForm.delay(fasta, samples, "test", sym_task.UID)
             #sym_task.celeryUID = task.id
             #sym_task.save()
 
@@ -227,6 +228,7 @@ def perfect(request, id, template='subtypes.html'):
     }
 
     return render(request, template, context)
+
 
 
 def multiplesCorrected(request, id, file, template='multiples.html'):
@@ -570,8 +572,10 @@ def dlEverything(request, id):
 
     ready, redirect = taskReady(sym_task)
     if ready:
-        path = os.path.join(settings.SYMTYPER_HOME, str(id))
-        return servZip(request, path)
+        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "all.zip")
+        fsize = os.stat(fPath).st_size
+        filename = "symtyper_%s_all_results.zip"%(str(id))
+        return servFile(request, ready, filename, fPath, fsize)
     elif redirect:
         return redirect
     else:

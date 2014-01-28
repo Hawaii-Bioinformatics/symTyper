@@ -82,19 +82,32 @@ def treeCsv(csvPath):
         counts: the csv in a dictionary.
         headers: the csv headers in a list.
 
+        
+
     """
     try:
         with open(csvPath) as tsv:
             counts = []
-            all = [line.strip().split() for line in tsv]
-            headers = all[0]
-            headers.insert(0, 'node')
+            rows = []
+            samples  = tsv.next().strip().split()[1:]
+            rows = [ [s] for s in samples]
+            headers = ['node']
+            for l in tsv:
+                l = l.strip().split()
+                headers.append(l[0])
+                for k, j in zip(xrange(len(rows)), l[1:]):
+                    rows[k].append(j)
+            
+            #all = [line.strip().split() for line in tsv]
 
-            if len(headers) > 1:
-                for row in all[1:]:
-                    if len(row) == len(headers):
-                        counts.append(dict(zip(headers, row)))
-                return counts, headers
+            #headers.insert(0, 'node')
+            for row in rows:
+                counts.append(dict(zip(headers, row)))
+            #if len(headers) > 1:
+            #    for row in all[1:]:
+            #        if len(row) == len(headers):
+            #            counts.append(dict(zip(headers, row)))
+            return counts, headers
     except:
         pass
     return None, None

@@ -27,6 +27,8 @@ class PlacementTree(object):
         self.newickOutptutFile = os.path.join(self.cladeDir,"placed_clade_%s.nwk" % self.clade)
         self.treePNGFile = os.path.join(self.cladeDir,"placed_clade_%s.png" % self.clade)
         self.treeSVGFile = os.path.join(self.cladeDir,"placed_clade_%s.svg" % self.clade)
+        
+        self.totalcount = 0
 
 
     def __getDistributionPerInternalNode__(self, tree, visitedInternalNodes):
@@ -74,10 +76,11 @@ class PlacementTree(object):
             print node.name
             # Creates a sphere face whose size is proportional to node's     
             # feature "weight"
-            C = CircleFace(radius=int(node.internalCount)/10, color="RoyalBlue", style="sphere")
-            T = TextFace("10")
+            rad = int( ((float(node.internalCount) / float(self.totalcount)) * 100.0) )
+            C = CircleFace(radius=rad, color="RoyalBlue", style="sphere")
+            T = TextFace(rad)
             # Let's make the sphere transparent
-            C.opacity = 0.3
+            C.opacity = 0.5
             # And place as a float face over the tree
             faces.add_face_to_node(C, node, 0, position="float")
             faces.add_face_to_node(T, node, 1)
@@ -155,7 +158,8 @@ class PlacementTree(object):
                 lca.intenalCounts =  lca.internalCount + numSeqs
             else:
                 lca.add_features( internalCount = numSeqs)
-
+            self.totalcount += numSeqs
+                
 
             #Update the breakdown by samples, based on the new samples
             if (lca.name in visitedInternalNodes.keys()):

@@ -30,6 +30,8 @@ urlpatterns = patterns('',
     # chart
     url(r'^(?P<id>\d+\.\d+\.\d+)/(?P<site>[A-Za-z]+\d+)/$', 'hmmer.views.chart', name="chart"),
 
+    # stats                       
+    url(r'^(?P<uid>\d+\.\d+\.\d+)/stats/', 'hmmer.views.descriptiveStats', name = 'descStats'),
     #############
     # DOWNLOADS #
     #############

@@ -5,9 +5,15 @@ import sys
 
 # TODO THESE FUNCTION DO NOT NEED TO BE IN CLASS OR STATIC
 class Helpers(object):
+      #@staticmethod
+      #def fastaStats(inFile):
+      #      print "Computing stats for %s " % inFile.name
+
       @staticmethod
-      def fastaStats(inFile):
-            print "Computing stats for %s " % inFile.name
+      def fastaFileSize(inFile):
+            print "Computing stats for %s " % inFile
+            return sum(1 for _ in SeqIO.parse(inFile, 'fasta'))
+
       @staticmethod
       def splitFileBySample(inFile, samplesDescFile, splitFastaDir):
             ## Strcuture of the sequence names is sample::id

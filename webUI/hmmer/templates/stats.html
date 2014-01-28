@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load pagination %}
+
+{% block head %}
+<title>Stats</title>
+{% endblock %}
+
+
+{% block body %}
+<h2>Descriptive Statistics</h2>
+<div class="col-md-12">
+  
+  <h3>Full Set</h3>
+  <table class="table-bordered table-condensed table-striped cf"  style = "width: 50%"> 
+    <tbody>
+      {% for row in fullset %}
+      <tr class="{% cycle '' 'altrow' %}"><td>{{row.0}}: </td><td>{{row.1}}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br />
+  <h3>Clade</h3>
+  <table class="table-bordered table-condensed table-striped cf"   style = "width: 50%"> 
+    <tbody>
+      {% for row in clade %}
+      <tr class="{% cycle '' 'altrow' %}"><td>{{row.0}}: </td><td>{{row.1}}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br />
+  <h3>Subclade</h3>
+  <table class="table-bordered table-condensed table-striped cf"  style = "width: 50%"> 
+    <tbody>
+      {% for row in subclade %}
+      <tr class="{% cycle '' 'altrow' %}"><td>{{row.0}}: </td><td>{{row.1}}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br />
+  <h3>Multiple</h3>
+  <table class="table-bordered table-condensed table-striped cf"  style = "width: 50%"> 
+    <tbody>
+      {% for row in multi %}
+      <tr class="{% cycle '' 'altrow' %}"><td>{{row.0}}: </td><td>{{row.1}}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br />
+</div>
+
+
+
+{% endblock %}

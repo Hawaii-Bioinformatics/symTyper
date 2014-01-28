@@ -411,6 +411,30 @@ def index(request, id, template='index.html'):
     return render(request, template, context)
 
 
+def descriptiveStats(request, uid, template = "stats.html"):
+    statsfile = open(os.path.join(settings.SYMTYPER_HOME, str(uid), "outputfile"))
+    stats = eval(statsfile.read())
+    statsfile.close()
+
+    fullset =[ ('Total', stats['fastaFileSize'],) , ('Symbiodinium', stats['totalSymbioHits'],), ('Other', stats['totalNonSymbioHits'] ,) ]
+
+    clade = []
+    for k, v in stats['cladesCounts'].iteritems():
+        clade.append( (k.split("_")[0].upper().replace("CLADE", "") , v,) )
+    clade.sort(key = lambda x: x[0])
+    clade.append( ('Total', sum( ( int(c[1]) for c in clade) ),)  )
+
+    sbbrk = stats['subcladeBreakdown']
+    subclade = [ ("Prefect", sbbrk['PERFECT'],), ("Unique", sbbrk['UNIQUE'],), 
+                 ("Short New", sbbrk['SHORTNEW'],), ("Short", sbbrk['SHORT'],),
+                 ("New", sbbrk['NEW'],), ("Multiple", sbbrk['MULTIPLE'],)]
+    subclade.append( ("Total",  sum( (int(s[1]) for s in subclade) ), ) )
+    
+    multi = [("In Tree", stats['nbInTree'],), ("Resolved", stats['nbResolved'],) ]
+
+    return render(request, template, dict(uid = uid, fullset = fullset, clade = clade, subclade = subclade, multi = multi)) 
+
+
 def dlAll(request, id):
     try:
         sym_task = symTyperTask.objects.get(UID=id)

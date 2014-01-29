@@ -21,7 +21,7 @@ from Helpers import makeDirOrdie, printVerbose
 
 
 class CD_HitParser(object):
-    MIN_NUM_SEQS = 3;
+    MIN_NUM_SEQS = 1;
     #samplesNames = samples
     def __init__(self, samplesFile, repsClustersFile, samplesClustDir, multiplesDir):
 

@@ -1,8 +1,9 @@
 from ete2 import Tree, TreeStyle, NodeStyle, faces, AttrFace, CircleFace, TextFace
 from Bio import Phylo
-from Helpers import makeDirOrdie
+from Helpers import makeDirOrdie, printVerbose
 import re
 import os
+import sys
 
 
 class PlacementTree(object):
@@ -72,9 +73,8 @@ class PlacementTree(object):
 
             nstyle["size"] = 0
             node.set_style(nstyle)
-        if "internalCount" in node.features:
-
-            #print node.name
+        elif "internalCount" in node.features:
+            #printVerbose(node.name)
             # Creates a sphere face whose size is proportional to node's     
             # feature "weight"
             #print self.totalcount
@@ -111,14 +111,14 @@ class PlacementTree(object):
         try:
             cladeInfo = open(self.correctedCountsFile,"r")
         except IOError:
-            print "** Could not open %s file" % self.correctedCountsFile
+            print >> sys.stderr, "** Could not open %s file" % self.correctedCountsFile
 
         # read in the newick tree 
         try:
-            print "*** opening the newick ref file %s" % self.newickRef
+            printVerbose("*** opening the newick ref file %s" % self.newickRef)
             tree = Tree(open(self.newickRef).readline().rstrip())
         except IOError:
-            print "Could not open newick reference file %s" % self.newickRef
+            print >> sys.stderr, "Could not open newick reference file %s" % self.newickRef
 
 
             
@@ -186,7 +186,7 @@ class PlacementTree(object):
 
         self.__getDistributionPerInternalNode__(tree, visitedInternalNodes)
         tree.write(features=["count", "name"], format=0, outfile=self.newickOutptutFile)
-        print visitedInternalNodes
+        printVerbose(visitedInternalNodes)
         #self.totalcount = {}
         #for k, v in visitedInternalNodes.iteritems():
         #    self.totalcount[k] = sum( map(int, v.itervalues()))

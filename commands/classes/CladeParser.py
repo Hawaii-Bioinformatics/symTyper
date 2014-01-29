@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import Bio
 import os 
+from Helpers import printVerbose
 
 class CladeParser(object):
     def __init__(self, inFile, outputDirPath, minEval=1e-20):
@@ -9,7 +10,7 @@ class CladeParser(object):
         self.minEval= minEval
 
     def run(self):
-        print "+++++"+self.outputDirPath+"++++++"
+        printVerbose("+++++"+self.outputDirPath+"++++++")
         lowFile  = open(os.path.join(self.outputDirPath, "LOW"), 'w')
         ambiguousFile = open(os.path.join(self.outputDirPath, "AMBIGUOUS"), 'w')
         hitsFile = open(os.path.join(self.outputDirPath, "HIT"), 'w')

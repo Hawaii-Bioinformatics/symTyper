@@ -18,6 +18,7 @@ from classes.PlacementTree_ete2 import *
 import Bio.SearchIO
 from Bio import SeqIO
 
+
 version="0.01"
 
 FORMAT = "%(asctime)-15s  %(message)s"
@@ -28,7 +29,7 @@ hmmer_db =  os.path.join("/", "home","celery","symtyper","dbases", "HMMER_ITS2_D
 blast_db =  os.path.join("/", "home","celery","symtyper","dbases", "blast_DB", "ITS2_Database_04_23_13.fas")
 #"/home/hputnam/Clade_Alignments/blast_DB/ITS2_Database_04_23_13.fas"
 
-logging.basicConfig(format=FORMAT, level=logging.DEBUG)
+
 
 def runInstance(myInstance):
    dryRunInstance(myInstance)
@@ -51,7 +52,7 @@ def makeDirOrdie(dirPath):
 
 def computeStats(args,  pool):
    """ Retrn statistics about the sequences and about the database"""
-   print "------"
+   printVerbose("------")
    outFile = open(args.out_file,'w')
    outputs={}
    # Relevant to dataset 1                                                                                                                                                               
@@ -85,8 +86,8 @@ def computeStats(args,  pool):
          detailedSymbioCounts[line[0]][clades[i]] = line[i+1]
    for clade in clades:
       cladesCounts[clade] = sum([int(detailedSymbioCounts[x][clade]) for x in detailedSymbioCounts.keys()])
-   print cladesCounts
-
+   
+   printVerbose(cladesCounts)
    outputs['cladesCounts'] = cladesCounts
 
 
@@ -94,21 +95,21 @@ def computeStats(args,  pool):
    subcladeBreakdown={}
    for outputType in ["MULTIPLE", "NEW", "PERFECT", "SHORT", "SHORTNEW", "UNIQUE"]:
       path = os.path.join(args.outputs_dir,"blastResults", outputType)
-      print path
+      printVerbose(path)
       subcladeBreakdown[outputType] = os.popen("cat %s/*.out | wc -l"% path).readline().rstrip()
-   print subcladeBreakdown
+   printVerbose(subcladeBreakdown)
    outputs['subcladeBreakdown'] = subcladeBreakdown
 
-   print "------"
+   printVerbose("------")
    # relevant to multiple hits 1                                                                                                                                                         
    nbResolved=0
    path = os.path.join(args.outputs_dir, "resolveMultiples", "correctedMultiplesHits", "resolved")
    if  os.listdir(path): # if it's not empty                                                                                                                                             
-      print path
+      printVerbose(path)
       nbResolved = os.popen("cat %s/* | wc -l" % path).readline().rstrip()
       raw_input()
 
-   print nbResolved
+   printVerbose(nbResolved)
    outputs['nbResolved'] = nbResolved
 
 
@@ -163,10 +164,10 @@ def processClades(args, pool=Pool(processes=1)):
    samples = [sample.rstrip() for sample  in open(args.samplesFile.name, 'r')]
    # TODO CHANGE THIS TO RUN ISNTANCE 
 
-   print samples
-   print os.path.join(hmmerOutputDir, samples[0]+".out")
-   print os.path.join(parsedHmmerOutputDir, samples[0])
-   print args.evalue
+   printVerbose(samples)
+   printVerbose(os.path.join(hmmerOutputDir, samples[0]+".out"))
+   printVerbose(os.path.join(parsedHmmerOutputDir, samples[0]))
+   printVerbose(args.evalue)
    
    #raw_input("press enter to contunue")
    #for sample in samples:
@@ -297,8 +298,6 @@ def resolveMultipleHits(args, pool):
 
 
 def buildPlacementTree(args, pool):
-   
-
    logging.debug("placermentTree: Building Newick placement Tree for multiple hits") 
    correctedClades = os.listdir(args.correctedResultsDir)
    logging.debug("placermentTree: Clades to be processed are: %s" % " ".join(correctedClades)) 
@@ -316,16 +315,13 @@ def buildPlacementTree(args, pool):
    logging.debug("placermentTree: Done with Placement tree processing") 
 
 
-   
-
-
 def makeBiome(args, pool):
    logging.debug("Making the biome file")
    logging.debug("Consolidating the subtypes files: PERFECT, SHORTNEW, UNIQUE")
    samplesBreakDown={}
    headerSet = set() # will contain all the values seen throughout the program                                                                                                        
    for myFile in ["PERFECT_subtypes_count.tsv", "SHORTNEW_subtypes_count.tsv", "UNIQUE_subtypes_count.tsv"]:
-      print myFile
+      printVerbose(myFile)
       subTypeFile = open(os.path.join(args.outputs_dir, 'blastResults', myFile))
       header = subTypeFile.readline().split()
       headerSet = headerSet.union(header[1:])
@@ -335,7 +331,7 @@ def makeBiome(args, pool):
             if not samplesBreakDown.has_key(data[0]):
                samplesBreakDown[data[0]] ={}
             for itemPos in range(1, len(header)):
-               #print data[0], "\t", header[itemPos], "\t", data[itemPos]                                                                                                             
+               #printVerbose( "%s\t%s\t%s"%(data[0], header[itemPos], data[itemPos]) )
                #raw_input()                                                                                                                                                           
                if samplesBreakDown[data[0]].has_key(header[itemPos]):
                   samplesBreakDown[data[0]][header[itemPos]] += int(data[itemPos])
@@ -353,7 +349,7 @@ def makeBiome(args, pool):
             if not samplesBreakDown.has_key(data[0]):
                samplesBreakDown[data[0]] ={}
             for itemPos in range(1, len(header)):
-               #print data[0], "\t", header[itemPos], "\t", data[itemPos]                                                                                                             
+               #printVerbose("%s\t%s\t%s"%(data[0], header[itemPos], data[itemPos]) )                                                                                                             
                #raw_input()                                                                                                                                                           
                # no need to check if the node is going to be in the file as we know it is going to be UNIQUE                                                                          
                samplesBreakDown[data[0]][header[itemPos]] = int(data[itemPos])
@@ -378,7 +374,7 @@ def main(argv):
    # PARENT PARSER PARAMS
    parser = argparse.ArgumentParser(description="symTyper Description", epilog="symTyper long text description")
    parser.add_argument('-v', '--version', action='version', version='%(prog)s '+version)
-   
+   parser.add_argument("--verbose", help="increase output verbosity", action="store_true")   
    #TODO: Chnage the default to 1 after testing
    parser.add_argument('-t', '--threads', type=int, default = 1)
    subparsers = parser.add_subparsers(dest='action', help='Available commands')
@@ -437,7 +433,15 @@ def main(argv):
 
    args = parser.parse_args()
 
-   print "Running with %s threads" % args.threads
+   if args.verbose:
+      logging.basicConfig(format=FORMAT, level=logging.DEBUG)
+   else:
+      logging.basicConfig(format=FORMAT, level=logging.ERROR)
+
+
+      
+   printVerbose.VERBOSE = args.verbose
+   printVerbose("Running with %s threads" % args.threads)
    pool = Pool(processes=args.threads)
 
    # my arguments are

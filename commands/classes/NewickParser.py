@@ -1,6 +1,7 @@
+import sys
 from Bio import Phylo
 import re
-
+from Helpers import printVerbose
 
 
 class NewickParser():
@@ -16,15 +17,16 @@ class NewickParser():
     def __getDistributionPerInternalNode__(self, tree, visitedInternalNodes):
         # get all the subtypes that we use in headers and print the header
         subtypes = set([i for x in visitedInternalNodes.values() for i in x])
-        print "\t",
-        print "\t".join(["%s"%x for x in subtypes])
-
+        printVerbose("\t", newline = False)
+        printVerbose("\t".join(["%s"%x for x in subtypes]) )
+                     
         for node in  visitedInternalNodes.keys():
-            print node,
+                         
+            printVerbose(node, newline = False)
             for sType in subtypes:
-                print "\t",
-                print visitedInternalNodes[node][sType] if sType in visitedInternalNodes[node].keys() else 0,
-            print "\n";
+                printVerbose("\t", newline = False)
+                printVerbose(visitedInternalNodes[node][sType] if sType in visitedInternalNodes[node].keys() else 0, newline = False)
+            printVerbose("\n")
 
         
 
@@ -33,13 +35,13 @@ class NewickParser():
         try:
             cladeInfo = open(self.correctedCountsFile,"r")
         except IOError:
-            print "Could not open %s file" % self.correctedCountsFile
+            print >> sys.stderr, "Could not open %s file" % self.correctedCountsFile
 
         # read in the newick tree 
         try:
             tree = Phylo.parse(self.newickRef, 'newick').next()
         except IOError:
-            print "Could not open newick reference file %s" % self.newickRef
+            print >> sys.stderr, "Could not open newick reference file %s" % self.newickRef
 
 
         # keeps the counts of sameple per internal_node {49:{X1: 11, X2 : 2, ... }, 55:{ X9 : 115:...}}
@@ -58,7 +60,7 @@ class NewickParser():
         # each line represents one cluster
         for line in cladeInfo:
             line = line.rstrip()
-            print "processing line: %s\n" % line
+            printVerbose( "processing line: %s\n" % line)
             clusterId = re.search('CL_(\d+)\t', line).groups()[0]
             numSeqs = re.search('numSeq: (\d+)\t', line).groups()[0]
 

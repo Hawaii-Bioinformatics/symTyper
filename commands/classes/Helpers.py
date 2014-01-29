@@ -3,6 +3,16 @@ from collections import Counter
 import os
 import sys
 
+class printVerbose(object):
+   VERBOSE = False
+   def __init__(self, msg, newline =True):
+      if printVerbose.VERBOSE:
+         if newline:
+            print msg
+         else:
+            print msg,
+
+
 # TODO THESE FUNCTION DO NOT NEED TO BE IN CLASS OR STATIC
 class Helpers(object):
       #@staticmethod
@@ -11,7 +21,7 @@ class Helpers(object):
 
       @staticmethod
       def fastaFileSize(inFile):
-            print "Computing stats for %s " % inFile
+            printVerbose("Computing stats for %s " % inFile)
             return sum(1 for _ in SeqIO.parse(inFile, 'fasta'))
 
       @staticmethod
@@ -58,7 +68,7 @@ def getNumberLines(inFile):
 
 ##### STATS FOR RUN #########################
 def makeCladeDistribTable(samplesDescFile, parsedHmmerOutputDir):
-      print "generating stats for samples.ids %s and outputs in %s " % (samplesDescFile, parsedHmmerOutputDir)
+      printVerbose("generating stats for samples.ids %s and outputs in %s " % (samplesDescFile, parsedHmmerOutputDir))
       cladeDistFileName = "ALL_counts.tsv"
       cladeDistFile = open(os.path.join(parsedHmmerOutputDir, cladeDistFileName), "w");
       outputs = ["HIT", "NOHIT", "LOW", "AMBIGUOUS"]

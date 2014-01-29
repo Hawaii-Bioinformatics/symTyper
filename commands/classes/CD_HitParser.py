@@ -1,4 +1,4 @@
-### THIS CODE IS MOSTLY COMPLETELY SEQUENTIAL.
+## THIS CODE IS MOSTLY COMPLETELY SEQUENTIAL.
 ### TODO, rewrite using a pool of processes
 
 #### VARIABLES CONVENTIONS
@@ -17,7 +17,7 @@ import os
 import sys
 from collections import Counter, defaultdict
 
-from Helpers import makeDirOrdie
+from Helpers import makeDirOrdie, printVerbose
 
 
 class CD_HitParser(object):
@@ -158,7 +158,7 @@ class CD_HitParser(object):
 
         # only sequences that occur in a cluster with at least MIN_NUM_SEQS from other clusters pass
         passedSeqs = self.__filterSeqs__()
-        print passedSeqs
+        printVerbose(passedSeqs)
 
         seqSubtypes= self.__initSeqSubtypes__()
 
@@ -188,7 +188,7 @@ class CD_HitParser(object):
 
 
             print >> detailedOutputFile, "#### Cluster: %s" % clustId;
-            #### print  passedSeq
+            #### printVerbose(passedSeq)
             # we resolve all the rep sequences that belong to that cluster from which we selected the passedSeq
             
             sampleClust=[]
@@ -200,15 +200,15 @@ class CD_HitParser(object):
                 clust = self.sample_sequenceCluster[sample][seq]
                 sampleClust.append((sample,clust))
                 # Which sequences are with seq in the sample  cluster file?
-                ####print  "\t"+seq
+                ####printVerbose("\t"+seq)
                 for sampleSeq in self.sample_clustersSeqs[sample][clust]:
-                    ####print  "\t\t"+sampleSeq
+                    ####printVerbose("\t\t"+sampleSeq)
                     nbSeqs+=1
                     # we collect all the subtypes that for all the sequences in the same cluster  
                     # for later computing the effective range
                     subtypes.extend(seqSubtypes[sampleSeq])
-                ####print "\n"
-            ####print  "\n"
+                ####printVerbose("\n")
+            ####printVerbose("\n")
 
 
             subtypeCounts = dict(Counter(subtypes))
@@ -264,11 +264,11 @@ class CD_HitParser(object):
                 if clade not in splitCorrectedCladeOutputFiles.keys():
                     # print the line in the appropriate clade file
                     splitCorrectedCladeOutputFiles[clade] = open(os.path.join(correctedResultsDir, "corrected", clade), 'w')
-                    print "*****************print I am here*******************"
-                    print clade
+                    printVerbose("*****************print I am here*******************")
+                    printVerbose(clade)
                  
-                    print  splitCorrectedCladeOutputFiles
-                    print "************************************"
+                    printVerbose(splitCorrectedCladeOutputFiles)
+                    printVerbose("************************************")
                 #print >> splitCorrectedCladeOutputFiles[clade], " Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:" % (
                 #    clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_clusterSubtypeCounts[clustId].items() ])
                 #    ),            

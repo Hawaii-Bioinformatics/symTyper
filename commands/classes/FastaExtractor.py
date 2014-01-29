@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from Bio import SeqIO
 import os 
+from Helpers import printVerbose
 
 class FastaExtractor(object):
 
@@ -14,7 +15,7 @@ class FastaExtractor(object):
     def run(self):
         inFileIndex = SeqIO.index(self.inFastaFile, 'fasta')
         myIds = [x.split()[self.idCol] for x in open(self.inFile, 'r')]
-        print myIds
+        printVerbose(myIds)
         mySeqs = [inFileIndex.get(x) for x in myIds ]
         SeqIO.write(mySeqs, open(self.outputFastaFile, 'w'), 'fasta')
 

@@ -1,9 +1,9 @@
 from ete2 import Tree, TreeStyle, NodeStyle, faces, AttrFace, CircleFace, TextFace
 from Bio import Phylo
-from Helpers import makeDirOrdie
+from Helpers import makeDirOrdie, printVerbose
 import re
 import os
-
+import sys
 
 class PlacementTree(object):
     def __init__(self, clade, correctedPlacementPerClade, newickRef, outputsDir):
@@ -45,13 +45,13 @@ class PlacementTree(object):
         try:
             cladeInfo = open(self.correctedCountsFile,"r")
         except IOError:
-            print "** Could not open %s file" % self.correctedCountsFile
+            print >> sys.stderr, "** Could not open %s file" % self.correctedCountsFile
         # read in the newick tree 
         try:
-            print "*** opening the newick ref file %s" % self.newickRef
+            printVerbose("*** opening the newick ref file %s" % self.newickRef)
             tree = Phylo.parse(self.newickRef, 'newick').next()
         except IOError:
-            print "Could not open newick reference file %s" % self.newickRef
+            print >> sys.stderr, "Could not open newick reference file %s" % self.newickRef
 
 
         # keeps the counts of sameple per internal_node {49:{X1: 11, X2 : 2, ... }, 55:{ X9 : 115:...}}

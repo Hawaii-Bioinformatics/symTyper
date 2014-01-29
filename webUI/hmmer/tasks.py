@@ -27,7 +27,7 @@ def handleForm(fasta, sample, inputform, uid):
     os.system("""%s --threads %s clade --i %s -s %s""" % (settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, fasta, sample))
     os.system("""%s  -t %s subtype -H hmmer_hits/ -s %s -b blast_output/ -r blastResults/ -f fasta """%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, sample))
     os.system("""%s  -t %s resolveMultipleHits -s %s -m blastResults/MULTIPLE/fasta/ -c resolveMultiples/"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, sample))
-    os.system("""xvfb-run  %s  -t %s builPlacementTree -c resolveMultiples/correctedMultiplesHits/corrected -n /home/celery/symtyper/dbases/clades_phylogenies/ -o placementInfo"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS))
+    os.system("""xvfb-run  %s  -t %s builPlacementTree -c resolveMultiples/correctedMultiplesHits/corrected -n %s -o placementInfo"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, os.path.join(settings.SYMTYPER_DBASE, "clades_phylogenies") ) )
     os.system("""%s  -t %s stats --outputs_dir %s -i %s --out_file %s """%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, parentDir, fasta, os.path.join(parentDir,"outputfile")) )
     os.makedirs(imageDir)
     os.system("""chgrp -R www-data %s"""%(parentDir))

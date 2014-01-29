@@ -28,7 +28,7 @@ class PlacementTree(object):
         self.treePNGFile = os.path.join(self.cladeDir,"placed_clade_%s.png" % self.clade)
         self.treeSVGFile = os.path.join(self.cladeDir,"placed_clade_%s.svg" % self.clade)
         
-        self.totalcount = 0
+        #self.totalcount = {}
 
 
     def __getDistributionPerInternalNode__(self, tree, visitedInternalNodes):
@@ -73,18 +73,30 @@ class PlacementTree(object):
             nstyle["size"] = 0
             node.set_style(nstyle)
         if "internalCount" in node.features:
-            print node.name
+
+            #print node.name
             # Creates a sphere face whose size is proportional to node's     
             # feature "weight"
-            rad = int( ((float(node.internalCount) / float(self.totalcount)) * 100.0) )
-            C = CircleFace(radius=rad, color="RoyalBlue", style="sphere")
-            T = TextFace(rad)
+            #print self.totalcount
+            
+            #rad = ((float(node.internalCount) / float(self.totalcount['total'])) * 100.0)
+            #rad = max(rad, 1)
+            #C = CircleFace(radius=rad, color="RoyalBlue", style="sphere")
+            #T = TextFace(" : ".join( map(str, [node.name, node.internalCount]) ), fsize = 14, fgcolor = "White")
+            T = TextFace(node.internalCount, fsize = 14, fgcolor = "White")
+            #T.background.color = "DimGray"
+            T.background.color = "Black"
+        
+            #print rad
+            #print node.internalCount
+            #print self.totalcount
             # Let's make the sphere transparent
-            C.opacity = 0.5
+            #C.opacity = 0.5
             # And place as a float face over the tree
-            faces.add_face_to_node(C, node, 0, position="float")
-            faces.add_face_to_node(T, node, 1)
-
+            #faces.add_face_to_node(C, node, 0, position="float")
+            #faces.add_face_to_node(T, node, 1)
+            faces.add_face_to_node(T, node, 0)
+            
     def generateImage(self, tree):
         ts = TreeStyle()
         ts.layout_fn = self.__layout__
@@ -144,9 +156,9 @@ class PlacementTree(object):
             # and generates a dict counts= {'X2' : 2, 'X3' : 1, 'X1' : 8}
             
             counts = dict(map(lambda x: x.split(":"), breakdown.split())) # breakdown by sample for an internal node
-
             # generate dict from array where i is key (subtype) and i+1 is value (count)
             # TODO: use more efficient way to do this!
+
             subtypesInfo = dict(zip([x.replace(":", "") for x in line.split("\t")[4].split()[1::2]], [y for y in line.split("\t")[4].split()[2::2]]))
 
             if len(subtypesInfo.keys()) == 1:
@@ -155,10 +167,9 @@ class PlacementTree(object):
                 pass
             lca  = tree.get_common_ancestor(subtypesInfo.keys())
             if 'internalCount' in lca.features:
-                lca.intenalCounts =  lca.internalCount + numSeqs
+                lca.internalCount =  int(lca.internalCount) + int(numSeqs)
             else:
-                lca.add_features( internalCount = numSeqs)
-            self.totalcount += numSeqs
+                lca.add_features( internalCount = int(numSeqs))
                 
 
             #Update the breakdown by samples, based on the new samples
@@ -168,6 +179,7 @@ class PlacementTree(object):
                         visitedInternalNodes[lca.name][c] = int(visitedInternalNodes[lca.name][c]) +  int(counts[c])
                     else:
                         visitedInternalNodes[lca.name][c] = int(counts[c])
+                
             else:
                 visitedInternalNodes[lca.name] = counts;
         # WRITE THIS
@@ -175,7 +187,11 @@ class PlacementTree(object):
         self.__getDistributionPerInternalNode__(tree, visitedInternalNodes)
         tree.write(features=["count", "name"], format=0, outfile=self.newickOutptutFile)
         print visitedInternalNodes
-
+        #self.totalcount = {}
+        #for k, v in visitedInternalNodes.iteritems():
+        #    self.totalcount[k] = sum( map(int, v.itervalues()))
+        #total = sum(self.totalcount.itervalues())
+        #self.totalcount['total'] = total
         self.generateImage(tree)
 
         

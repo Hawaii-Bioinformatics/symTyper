@@ -404,14 +404,19 @@ def index(request, id, template='index.html'):
     else:
         pass
         #message = "pending..."
-    context = {
+    if done:
+        context = descriptiveStats(id)
+        context['done'] = done
+        context['id'] = id
+    else:
+        context= {
             'done': done, 
             'id': id
             }
     return render(request, template, context)
 
 
-def descriptiveStats(request, uid, template = "stats.html"):
+def descriptiveStats(uid):
     statsfile = open(os.path.join(settings.SYMTYPER_HOME, str(uid), "outputfile"))
     stats = eval(statsfile.read())
     statsfile.close()
@@ -432,7 +437,7 @@ def descriptiveStats(request, uid, template = "stats.html"):
     
     multi = [("In Tree", stats['nbInTree'],), ("Resolved", stats['nbResolved'],) ]
 
-    return render(request, template, dict(uid = uid, fullset = fullset, clade = clade, subclade = subclade, multi = multi)) 
+    return dict(uid = uid, fullset = fullset, clade = clade, subclade = subclade, multi = multi)
 
 
 def dlAll(request, id):

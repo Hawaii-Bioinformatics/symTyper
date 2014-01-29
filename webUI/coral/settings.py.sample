@@ -174,11 +174,14 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 )
 
 SYMTYPER_HOME = os.path.join() # Where Symtyper output goes
+SYMTYPER_DBASE = os.path.join() # Where Symtyper databases are 
 SYMTYPER_IMG = os.path.join() # Where placement tree image directory gets moved to
 SYMTYPER_THREADS = 6
 
 BIN_PATH=os.path.join()
 SYMTYPER_PATH=os.path.join(BIN_PATH, "symTyper.py")
+ZIP_EXCLUDE = os.path.join()
+
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 CELERY_TASK_RESULT_EXPIRES = 3600

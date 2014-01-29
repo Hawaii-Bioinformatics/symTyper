@@ -75,8 +75,8 @@ def clades(request, id, template='clades.html'):
         with open(os.path.join(output, "ALL_counts.tsv")) as tsv:
             all_counts = []
             all_lines = [line.strip().split() for line in tsv]
-            all_headers = all_lines[0]
-
+            #all_headers = all_lines[0]
+            all_headers = [ l.title() for l in all_lines[0] ]
             for row in all_lines[1:]:
                 total = hit = no_hit = low = ambiguous = percentages = 0
                 site = row[0]

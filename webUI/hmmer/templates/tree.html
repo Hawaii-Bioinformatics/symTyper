@@ -9,64 +9,51 @@
 
 {% block body %}
 <div class="container">
+
     <div class="row">
-        <div class="col-md-3">
-
-            <a href="#" class="thumbnail">
-                <img src="{{ STATIC_URL }}/img/{{ id }}/placementInfo/{{ file }}/placed_clade_{{ file }}.png" alt="nwick tree" width="100%"/>
-            </a>
-
-            <div class="caption">
-                <h3>newick.png</h3>
-            </div>
-
-        </div>
-        <div class="col-md-9">
-
-            <div class="row">
-                <div class="col-xs-6">
-                    <h2><a href="#">Trees-{{ file }}</a></h2>
-                </div>
-
-                <div class="col-xs-6">
-                    <!--Download Button Goes Here -->
-                </div>
-            </div>
-
-
-
-            <div>
-               {% if counts %} 
-                <div class="table-responsive">
-                    <table class="table-bordered table-condensed table-striped cf"> 
-                        <thead>
-                            <tr class="{% cycle '' 'altrow' as alt %}">
-                                {% for header in  headers %}
-                                <th>{{ header }}</th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in counts %}
-                            <tr class="{% cycle alt  %}">
-                                {% for header in headers %}
-                                <td> {{ row| dictvalue:header }}  </td>
-                                {% endfor %}
-
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% if is_paginated %}{% pagination counts %}{% endif %}
-                {% else %}
-                <div class="col-sm-4 col-sm-offset-4">
-                    <h1>No Data Available</h1>
-                </div>
-                {% endif %}
-            </div>
-
-        </div>
+      <div class="col-xs-6">
+        <h2>Trees-{{ file }}</h2>
+      </div>
+      
+      <div class="col-xs-6">
+        <!--Download Button Goes Here -->
+      </div>
+    </div>
+    <div class = "row">
+      {% if counts %} 
+      <div class="table-responsive col-md-11">
+        <table class="table-bordered table-condensed table-striped cf"> 
+          <thead>
+            <tr class="{% cycle '' 'altrow' as alt %}">
+              {% for header in  headers %}
+              <th>{{ header }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in counts %}
+            <tr class="{% cycle alt  %}">
+              {% for header in headers %}
+              <td> {{ row| dictvalue:header }}  </td>
+              {% endfor %}
+	      
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if is_paginated %}{% pagination counts %}{% endif %}
+      {% else %}
+      <div class="col-sm-4 col-sm-offset-4">
+        <h1>No Data Available</h1>
+      </div>
+      {% endif %}
+    </div>
+    <br />
+    <div class="row col-xs-6">
+      <h2 >Graph of Clade {{ file }}</h2>
+      <div class="caption" style = "font-size:0.8em" >Download <a href="{{ STATIC_URL }}/img/{{ id }}/placementInfo/{{ file }}/placed_clade_{{ file }}.svg">svg version</a></div>
+      <img src="{{ STATIC_URL }}/img/{{ id }}/placementInfo/{{ file }}/placed_clade_{{ file }}.png" alt="nwick tree" style= "max-width:1000px" />
     </div>
 </div>
 {% endblock %}

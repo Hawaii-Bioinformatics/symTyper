@@ -63,8 +63,8 @@ def makeDirOrdie(dirPath):
    return dirPath
 
 def getNumberLines(inFile):
-      with open(inFile) as f:
-            return len([1 for i in f])
+   with open(inFile) as f:
+      return len([1 for i in f])
 
 ##### STATS FOR RUN #########################
 def makeCladeDistribTable(samplesDescFile, parsedHmmerOutputDir):

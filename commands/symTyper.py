@@ -15,18 +15,18 @@ from classes.ProgramRunner import *
 from classes.CD_HitParser import *
 from classes.PlacementTree_ete2 import * 
 
-import Bio.SearchIO
-from Bio import SeqIO
+#import Bio.SearchIO  ## DLS - Not used???
+#from Bio import SeqIO ## DLS - Not used???
 
 
-version="0.01"
+version = "0.01"
 
 FORMAT = "%(asctime)-15s  %(message)s"
 
 ### TODO add this to configuration file
-hmmer_db =  os.path.join("/", "home","celery","symtyper","dbases", "HMMER_ITS2_DB", "All_Clades.hmm")
+#hmmer_db =  os.path.join("/", "home","celery","symtyper","dbases", "HMMER_ITS2_DB", "All_Clades.hmm")
 #"/home/hputnam/Clade_Alignments/HMMER_ITS2_DB/All_Clades.hmm"
-blast_db =  os.path.join("/", "home","celery","symtyper","dbases", "blast_DB", "ITS2_Database_04_23_13.fas")
+#blast_db =  os.path.join("/", "home","celery","symtyper","dbases", "blast_DB", "ITS2_Database_04_23_13.fas")
 #"/home/hputnam/Clade_Alignments/blast_DB/ITS2_Database_04_23_13.fas"
 
 
@@ -55,30 +55,30 @@ def computeStats(args,  pool):
    printVerbose("------")
    outFile = open(args.out_file,'w')
    outputs={}
-   # Relevant to dataset 1                                                                                                                                                               
+
+   # Relevant to dataset 1
    fastaFileSize = Helpers.fastaFileSize(args.inFile)
    outputs['fastaFileSize'] = fastaFileSize
 
-   symbioCounts={} # parsed version of hmmer_parsedOutput/ALL_counts.tsv                                                                                                                 
+   symbioCounts={} # parsed version of hmmer_parsedOutput/ALL_counts.tsv
    out_breakdown_lines =  [x.strip().split() for x in open(os.path.join(args.outputs_dir, "hmmer_parsedOutput","ALL_counts.tsv"), 'r').readlines()[1:]]
    for line in out_breakdown_lines:
       symbioCounts[line[0]] = line[1:]
 
-   # Relevant to dataset 2                                                                                                                                                               
+   # Relevant to dataset 2
    totalSymbioHits = sum([int(symbioCounts[x][0]) for x in symbioCounts.keys()])
    outputs['totalSymbioHits'] = totalSymbioHits
 
-   # Relevant to dataset 3                                                                                                                                                               
+   # Relevant to dataset 3
    totalNonSymbioHits = fastaFileSize - totalSymbioHits
    outputs['totalNonSymbioHits'] = totalNonSymbioHits
 
-   detailedSymbioCounts={} # parsed version of hmmer_parsedOutput/DETAILED_counts.tsv {"sample_1":{"clade_A":XX, "clade_B":XX, ..} sameple_2:{..} ..}                                    
-
+   detailedSymbioCounts={} # parsed version of hmmer_parsedOutput/DETAILED_counts.tsv {"sample_1":{"clade_A":XX, "clade_B":XX, ..} sameple_2:{..} ..}
 
    out_breakdown_lines =  [x.strip().split() for x in open(os.path.join(args.outputs_dir, "hmmer_parsedOutput","DETAILED_counts.tsv"), 'r').readlines()]
    clades = out_breakdown_lines[0][1:]
-   # relevant to clade 1                                                                                                                                                                 
-   cladesCounts = {x:0 for x in clades} # contains the sum for symbioHits per Clade                                                                                                      
+   # relevant to clade 1
+   cladesCounts = {x:0 for x in clades} # contains the sum for symbioHits per Clade
 
    for line in out_breakdown_lines[1:]:
       detailedSymbioCounts[line[0]]={}
@@ -91,7 +91,7 @@ def computeStats(args,  pool):
    outputs['cladesCounts'] = cladesCounts
 
 
-   # relevant to subclde 1                                                                                                                                                               
+   # relevant to subclade 1
    subcladeBreakdown={}
    for outputType in ["MULTIPLE", "NEW", "PERFECT", "SHORT", "SHORTNEW", "UNIQUE"]:
       path = os.path.join(args.outputs_dir,"blastResults", outputType)
@@ -99,21 +99,21 @@ def computeStats(args,  pool):
       subcladeBreakdown[outputType] = os.popen("cat %s/*.out | wc -l"% path).readline().rstrip()
    printVerbose(subcladeBreakdown)
    outputs['subcladeBreakdown'] = subcladeBreakdown
-
    printVerbose("------")
-   # relevant to multiple hits 1                                                                                                                                                         
+
+   # relevant to multiple hits 1
    nbResolved=0
    path = os.path.join(args.outputs_dir, "resolveMultiples", "correctedMultiplesHits", "resolved")
-   if  os.listdir(path): # if it's not empty                                                                                                                                             
+   if  os.listdir(path): # if it's not empty
       printVerbose(path)
       nbResolved = os.popen("cat %s/* | wc -l" % path).readline().rstrip()
-      raw_input()
+      #raw_input()
 
    printVerbose(nbResolved)
    outputs['nbResolved'] = nbResolved
 
 
-   # relevant to multiple hits 2                                                                                                                                                         
+   # relevant to multiple hits 2
    nbInTree=0
    dirs = os.listdir(os.path.join(args.outputs_dir, "placementInfo"))
    for myDir in dirs:
@@ -142,11 +142,10 @@ def processClades(args, pool=Pool(processes=1)):
    makeDirOrdie(hmmerOutputDir)   
    logging.debug('CLADE: Starting hmmscans for %s files ' % len(fastaList))
    # TODO UNCOMMENT THIS
-   pool.map(runInstance, [ProgramRunner("HMMER_COMMAND", [ hmmer_db, os.path.join(fastaFilesDir,x), os.path.join(hmmerOutputDir,x.split(".")[0]) ] ) for x in fastaList])
+   pool.map(runInstance, [ProgramRunner("HMMER_COMMAND", [ os.path.join(hmmerOutputDir, x.split(".")[0]), args.hmmdb, os.path.join(fastaFilesDir,x) ] ) for x in fastaList])
    logging.debug('CLADE: Done with hmmscans')
 
    #Parse HMMscan
-
    parsedHmmerOutputDir = os.path.join(os.path.dirname(args.inFile.name), "hmmer_parsedOutput")   
 
 
@@ -155,8 +154,6 @@ def processClades(args, pool=Pool(processes=1)):
    logging.debug('CLADE:Parsing Hmmer outputs for %s files ' % len(fastaList))
 
    # making dirs in hmmer_parsedOutput with the sample names
-   
-
    pool.map(makeDirOrdie, [ os.path.join(parsedHmmerOutputDir, x.split(".")[0]) for x in fastaList])    
 
 
@@ -204,7 +201,7 @@ def extractSeqsFromHits(splitFastaRegEx, inFileRegEx, outputFastaRegEx, idCol, s
    an exmaple fileRegEx is os.path.join(args.hmmerOutputs, "%s", "HIT") it just has one missing field for the sample
    idCol is the position of the id in the file. We assue that the field are tab delimited
    """ 
-   if args and args.action== "splitFasta":
+   if args and args.action == "splitFasta":
       # do something
       pass
    else:
@@ -215,10 +212,11 @@ def extractSeqsFromHits(splitFastaRegEx, inFileRegEx, outputFastaRegEx, idCol, s
       
 
 def processSubtype(args, pool):
-   logging.debug("SYBTYPE: Running blast for subtyping")
+   logging.debug("SUBTYPE: Running blast for subtyping")
    samples = [sample.rstrip() for sample in open(args.samplesFile.name, 'r')]
    makeDirOrdie(args.blastOutDir)
-   pool.map(runInstance, [ProgramRunner("BLAST_COMMAND", [os.path.join(args.hitsDir, sample+".fasta"), blast_db, os.path.join(args.blastOutDir, sample+".out") ] ) for sample in samples])
+   print [ [os.path.join(args.hitsDir, sample+".fasta"), args.blastdb, os.path.join(args.blastOutDir, sample+".out") ]  for sample in samples]
+   pool.map(runInstance, [ProgramRunner("BLAST_COMMAND", [os.path.join(args.hitsDir, sample+".fasta"), args.blastdb, os.path.join(args.blastOutDir, sample+".out") ] ) for sample in samples])
    logging.debug("SUBTYPE: Done running blast for subtyping")
 
    logging.debug("SUBTYPE: Parsing blast output files")
@@ -265,10 +263,10 @@ def resolveMultipleHits(args, pool):
    samples = [sample.rstrip() for sample in open(args.samplesFile.name, 'r')]
 
    makeDirOrdie(os.path.join(args.clustersDir, "clusters",))
+   
+   multipleFastaDir = os.path.join(args.multipleDir, "fasta")
 
-   
-   
-   pool.map(runInstance, [ProgramRunner("CLUSTER_COMMAND", [os.path.join(args.multipleFastaDir, sample+".fasta"), 
+   pool.map(runInstance, [ProgramRunner("CLUSTER_COMMAND", [os.path.join(multipleFastaDir, sample+".fasta"), 
                                                             os.path.join(args.clustersDir, "clusters", sample)])  for sample in samples])
    logging.debug("resolveMultipleHits: Done clustering of multiple reads")
 
@@ -288,8 +286,9 @@ def resolveMultipleHits(args, pool):
    makeDirOrdie(os.path.join(args.clustersDir, repsDir, repsClustersDir))
    runInstance(ProgramRunner("CLUSTER_COMMAND", [os.path.join(args.clustersDir, repsDir, repsFasta), os.path.join(args.clustersDir, repsDir, repsClustersDir, repsFasta)]))
    logging.debug("resolveMultipleHits: done clustering the reps %s" % os.path.join(args.clustersDir, repsDir, repsFasta))
-   cdHitParser =  CD_HitParser("samples.ids", "resolveMultiples/Reps/Clusters/allReps.fasta.clstr", 
-                               "resolveMultiples/clusters/", "blastResults/MULTIPLE/",)
+
+   cdHitParser =  CD_HitParser(args.samplesFile.name, os.path.join(args.clustersDir, repsDir, repsClustersDir, "allReps.fasta.clstr"), 
+                               os.path.join(args.clustersDir, "clusters"), os.path.join(args.multipleDir),)
    
    makeDirOrdie(os.path.join(args.clustersDir, correctedResultsDir))
    cdHitParser.run(os.path.join(args.clustersDir, correctedResultsDir)) 
@@ -349,7 +348,7 @@ def makeBiome(args, pool):
             if not samplesBreakDown.has_key(data[0]):
                samplesBreakDown[data[0]] ={}
             for itemPos in range(1, len(header)):
-               #printVerbose("%s\t%s\t%s"%(data[0], header[itemPos], data[itemPos]) )                                                                                                             
+               #printVerbose("%s\t%s\t%s"%(data[0], header[itemPos], data[itemPos]) )
                #raw_input()                                                                                                                                                           
                # no need to check if the node is going to be in the file as we know it is going to be UNIQUE                                                                          
                samplesBreakDown[data[0]][header[itemPos]] = int(data[itemPos])
@@ -385,6 +384,9 @@ def main(argv):
    parser_clade.add_argument('-i', '--inFile', type=argparse.FileType('r'), required=True, help=" Input fasta file ")
    parser_clade.add_argument('-e', '--evalue', type=float, default=1e-05)
    parser_clade.add_argument('-d', '--evalDifference', type=float, default=1e5, help="Eval difference between first and second hits")
+
+   parser_clade.add_argument('--hmmdb', type = str, required=True, help=" Path to the hmm database ") # instead of hardcoding in the program..
+
    parser_clade.set_defaults(func=processClades)
 
    ## EXTRACTFASTA
@@ -400,13 +402,14 @@ def main(argv):
    parser_subtype.add_argument('-b', '--blastOutDir', type=makeDirOrdie, required=True, help=" blast ouput directory")
    parser_subtype.add_argument('-r', '--blastResults', type=makeDirOrdie, required=True, help=" parsed blast results directory")
    parser_subtype.add_argument('-f', '--fastaFilesDir', type=makeDirOrdie, required=True, help="Split fasta files directory ")
+   parser_subtype.add_argument('--blastdb', type = str, required=True, help=" Path to the blast database ") # instead of hardcoding in the program..   
    parser_subtype.set_defaults(func=processSubtype)
 
    ## RESOLVEMULTIPLE
    # In a PIPELINE SUBTYPE REQUIRES the extrction of the sequences (EXTRACTFASTA) into into fasta files 
    parser_subtype = subparsers.add_parser('resolveMultipleHits')
    parser_subtype.add_argument('-s', '--samplesFile', type=argparse.FileType('r'), required=True, help=" Samples file ")
-   parser_subtype.add_argument('-m', '--multipleFastaDir', required=True, help="Directory containing fasta sequences that yielded multiple hits")
+   parser_subtype.add_argument('-m', '--multipleDir', required=True, help="Directory containing fasta sequences that yielded multiple hits")
    parser_subtype.add_argument('-c', '--clustersDir', type=makeDirOrdie, required=True, help="Dir that will contain cluster information")
    parser_subtype.set_defaults(func=resolveMultipleHits)
 
@@ -425,7 +428,7 @@ def main(argv):
    parser_stats.add_argument( '--out_file',  required=True, help="Output stats files where results will be printed")
    parser_stats.set_defaults(func=computeStats)
 
-   ## Generate BIOME file                                                                                                                                                                
+   ## Generate BIOME file
    parser_biome = subparsers.add_parser('makeBiome')
    parser_biome.add_argument( '--outputs_dir',  required=True, help="Path to the directory contains the output files")
    parser_biome.set_defaults(func=makeBiome)

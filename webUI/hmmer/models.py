@@ -17,10 +17,11 @@ class symTyperTask(models.Model):
     celeryUID = models.TextField(null=True, blank=True)
     UID = models.TextField(null=True, blank=True)
     state = models.IntegerField(default = NOT_STARTED, choices = STATES, blank = False, null = False)
-
+    modified = models.DateField(auto_now = True)
+    created = models.DateField(auto_now_add = True)
 
 class AdminSymTyperTask(admin.ModelAdmin):
-    list_display = ['celeryUID', 'UID']
+    list_display = ['celeryUID', 'UID', 'created', 'modified']
 
 
 #admin.site.register(symTyperTask, AdminSymTyperTask)

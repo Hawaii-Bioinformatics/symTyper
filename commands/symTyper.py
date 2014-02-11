@@ -215,7 +215,6 @@ def processSubtype(args, pool):
    logging.debug("SUBTYPE: Running blast for subtyping")
    samples = [sample.rstrip() for sample in open(args.samplesFile.name, 'r')]
    makeDirOrdie(args.blastOutDir)
-   print [ [os.path.join(args.hitsDir, sample+".fasta"), args.blastdb, os.path.join(args.blastOutDir, sample+".out") ]  for sample in samples]
    pool.map(runInstance, [ProgramRunner("BLAST_COMMAND", [os.path.join(args.hitsDir, sample+".fasta"), args.blastdb, os.path.join(args.blastOutDir, sample+".out") ] ) for sample in samples])
    logging.debug("SUBTYPE: Done running blast for subtyping")
 

@@ -5,6 +5,7 @@ Created on Jul 5, 2013
 '''
 from celery.task import task
 from django.conf import settings
+from django.db.models import Q
 from models import symTyperTask
 from forms import InputForm
 import os
@@ -42,3 +43,23 @@ def handleForm(fasta, sample, inputform, uid):
     sym_task.state = symTyperTask.DONE
     sym_task.save()
     
+
+@task(ignore_result=True)
+def executeDeleteData(uid):
+    job_directory = os.path.join(settings.SYMTYPER_HOME, uid)
+    os.system("rm -r %s"%(job_directory))
+    return True
+
+
+@task()
+def cleanupJobs(removeOlder):
+    try:
+        removeOlder = int(removeOlder)
+    except:
+        removeOlder = 10
+    thresh = datetime.datetime.utcnow() - datetime.timedelta(days=removeOlder)
+    
+    for job_object in symTyperTask..objects.filter(Q(modified__lte = thresh)).exclude( Q(done = symTyperTask.RUNNING) | Q(done = symTyperTask.NOT_STARTED) ):      
+        executeDeleteData(str(job_object.UID))
+    symTyperTask.objects.filter(Q(modified__lte = thresh)).exclude( Q(done = symTyperTask.RUNNING) | Q(done = symTyperTask.NOT_STARTED) ).delete()
+    return True

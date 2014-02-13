@@ -51,6 +51,11 @@ class BlastParser(object):
             has_hit=False;
             stop=False;
             oldBits=-1;
+
+
+            if len(result.hits)==0:
+                print >> self.new, "%s, No Blast hit" % result.id
+
             for hit in result.hits:
                 if len(hit.hsps):
                     hsp = hit.hsps[0]

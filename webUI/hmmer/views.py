@@ -430,7 +430,7 @@ def descriptiveStats(uid):
     clade.append( ('Total', sum( ( int(c[1]) for c in clade) ),)  )
 
     sbbrk = stats['subcladeBreakdown']
-    subclade = [ ("Prefect", sbbrk['PERFECT'],), ("Unique", sbbrk['UNIQUE'],), 
+    subclade = [ ("Perfect", sbbrk['PERFECT'],), ("Unique", sbbrk['UNIQUE'],), 
                  ("Short New", sbbrk['SHORTNEW'],), ("Short", sbbrk['SHORT'],),
                  ("New", sbbrk['NEW'],), ("Multiple", sbbrk['MULTIPLE'],)]
     subclade.append( ("Total",  sum( (int(s[1]) for s in subclade) ), ) )

@@ -59,7 +59,7 @@ def cleanupJobs(removeOlder):
         removeOlder = 10
     thresh = datetime.datetime.utcnow() - datetime.timedelta(days=removeOlder)
     
-    for job_object in symTyperTask..objects.filter(Q(modified__lte = thresh)).exclude( Q(done = symTyperTask.RUNNING) | Q(done = symTyperTask.NOT_STARTED) ):      
+    for job_object in symTyperTask.objects.filter(Q(modified__lte = thresh)).exclude( Q(done = symTyperTask.RUNNING) | Q(done = symTyperTask.NOT_STARTED) ) :      
         executeDeleteData(str(job_object.UID))
     symTyperTask.objects.filter(Q(modified__lte = thresh)).exclude( Q(done = symTyperTask.RUNNING) | Q(done = symTyperTask.NOT_STARTED) ).delete()
     return True

@@ -16,10 +16,9 @@ class CladeParser(object):
         hitsFile = open(os.path.join(self.outputDirPath, "HIT"), 'w')
         noHitsFile = open(os.path.join(self.outputDirPath, "NOHIT"), 'w')
         for seq in Bio.SearchIO.parse(self.inFile, 'hmmer3-text'):
-            if len(seq.hits) >= 1:
+            if len(seq.hits) > 1:
                 if seq.hits[0].evalue > self.minEval:
-                    lowFile.write("LOW:%s\t%s\t%s\n" 
-                                  % (seq.id, seq.hits[0].id, seq.hits[0].evalue));
+                    lowFile.write("LOW:%s\t%s\t%s\n" % (seq.id, seq.hits[0].id, seq.hits[0].evalue));
                     continue
                 else:
                     if len(seq.hits) > 1:

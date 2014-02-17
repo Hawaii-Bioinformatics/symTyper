@@ -129,6 +129,7 @@ class CD_HitParser(object):
         for sample in self.samples:
             # open file exists and add subtypes
             if os.path.exists(os.path.join(self.multiplesDir, sample+".out")):
+
                 for line in open(os.path.join(self.multiplesDir, sample+".out"), 'r'):
                     line = line.rstrip()
                     data = line.split()
@@ -247,7 +248,7 @@ class CD_HitParser(object):
             # if resolved
             if len(effectiveSubtypes.keys()) == 1:
 
-                print >> resolvedOutputFile, "Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:%s" % (
+                print >> resolvedOutputFile, "Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:%s\n" % (
                     clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_sampleTotalCounts[clustId].items()]), 
                     " ".join(["%s:%s" %(x,y) for (x,y) in effectiveSubtypes.items()])
                     ),  
@@ -255,32 +256,24 @@ class CD_HitParser(object):
                 if clade not in splitResolvedCladeOutputFiles.keys():
                     # print the line in the appropriate clade file
                     splitResolvedCladeOutputFiles[clade] = open(os.path.join(correctedResultsDir, "resolved", clade), 'w')
-                print >> splitResolvedCladeOutputFiles, "Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:%s" % (
-                    clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_sampleTotalCounts[clustId].items()]), 
+                print >> splitResolvedCladeOutputFiles[clade], "Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:%s" % (
+                    clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_sampleTotalCounts[clustId].items()]),
                     " ".join(["%s:%s" %(x,y) for (x,y) in effectiveSubtypes.items()])
                     ),  
             else:
-
                 if clade not in splitCorrectedCladeOutputFiles.keys():
                     # print the line in the appropriate clade file
                     splitCorrectedCladeOutputFiles[clade] = open(os.path.join(correctedResultsDir, "corrected", clade), 'w')
                     printVerbose("*****************print I am here*******************")
                     printVerbose(clade)
                  
-                    printVerbose(splitCorrectedCladeOutputFiles)
+                    printVerbose(splitCorrectedCladeOutputFiles[clade])
                     printVerbose("************************************")
-                #print >> splitCorrectedCladeOutputFiles[clade], " Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:" % (
-                #    clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_clusterSubtypeCounts[clustId].items() ])
-                #    ),            
+
                 print >> splitCorrectedCladeOutputFiles[clade], " Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:" % (
                     clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_sampleTotalCounts[clustId].items()])
                     ),            
 
-                
-                
-                #print >> correctedOutputFile, "Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:" % (
-                #    clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_clusterSubtypeCounts[clustId].items() ])
-                #    ),
                 print >> correctedOutputFile, "Cluster: %s\tnumSeq: %s\tclade: %s\tbreakDown:%s\tsubtypes:" % (
                     clustId, nbSeqs, clade, " ".join(["%s:%s" % (key,val) for (key,val) in self.reps_sampleTotalCounts[clustId].items()])
                     ),

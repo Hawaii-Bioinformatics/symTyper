@@ -83,12 +83,13 @@ def clades(request, id, template='clades.html'):
                 for column in row[1:]:
                     total += int(column)
 
-                if total != 0:
-                    hit = round(float(row[1])/total * 100, 2)
-                    no_hit = round(float(row[2])/total * 100, 2)
-                    low = round(float(row[3])/total * 100, 2)
-                    ambiguous = round(float(row[4])/total * 100, 2)
-                percentages = [site, hit, no_hit, low, ambiguous]
+                # if total != 0:
+                #     hit = round(float(row[1])/total * 100, 2)
+                #     no_hit = round(float(row[2])/total * 100, 2)
+                #     low = round(float(row[3])/total * 100, 2)
+                #     ambiguous = round(float(row[4])/total * 100, 2)
+                # percentages = [site, hit, no_hit, low, ambiguous]
+                percentages = [row[0], row[1], row[2], row[3], row[4]]
                 all_counts.append(dict(zip(all_headers, percentages)))
 
         with open(os.path.join(output, "DETAILED_counts.tsv")) as tsv:

@@ -17,7 +17,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'symtyper',  # Or path to database file if using sqlite3.
+        'NAME': '',  # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': ,
         'PASSWORD': ,
@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['*']
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'Pacific/Honolulu'
+CELERY_TIMEZONE = 'Pacific/Honolulu'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -196,7 +197,7 @@ CELERY_TASK_RESULT_EXPIRES = 3600
 import djcelery
 djcelery.setup_loader()
 BROKER_HOST = 
-BROKER_PORT = 5672
+BROKER_PORT = 
 BROKER_USER = 
 BROKER_PASSWORD = 
 BROKER_VHOST = 

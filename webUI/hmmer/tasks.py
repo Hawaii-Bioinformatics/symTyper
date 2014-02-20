@@ -36,8 +36,9 @@ def handleForm(fasta, sample, inputform, uid):
     os.makedirs(imageDir)
     ret = os.system("""chgrp -R www-data %s """%(parentDir))
     ret = os.system("""ln -s %s %s """ % (os.path.join(parentDir, 'placementInfo'), imageDir))
+
     os.chdir(settings.SYMTYPER_HOME)
-    ret = os.system("""zip -r %s.zip %s -x@%s """%(uid, parentDir, settings.ZIP_EXCLUDE))
+    ret = os.system("""zip -r %s.zip %s -x@%s """%(uid, uid, settings.ZIP_EXCLUDE))
     ret = os.system("""mv %s.zip %s """%(uid, os.path.join(parentDir, "all.zip")) )
     
     os.chdir(parentDir)

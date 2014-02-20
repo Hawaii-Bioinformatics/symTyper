@@ -58,4 +58,6 @@ urlpatterns = patterns('',
     # all
     url(r'^(?P<id>\d+\.\d+\.\d+)/dlEverything/$', 'hmmer.views.dlEverything', name="dlEverything"),
     # url(r'^status/(?P<id>\d+\.\d+\.\d+)/(?P<filename>[A-Z]+\_[a-z]+\.tsv)/download/$','hmmer.views.download',name="download"),
+    url(r'^(?P<id>\d+\.\d+\.\d+)/dlBiom/$', 'hmmer.views.dlBiom', name="dlBiom"),
+
 )

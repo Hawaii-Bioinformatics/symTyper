@@ -45,9 +45,6 @@ def inputFormDisplay(request, template='upload.html'):
             writeFile(request.FILES['sample_File'], samples)
 
             task = handleForm.delay(fasta, samples, "test", sym_task.UID)
-            #sym_task.celeryUID = task.id
-            #sym_task.save()
-
             return HttpResponseRedirect(reverse("index", args=[sym_task.UID]))
     else:
         form = InputForm()
@@ -69,41 +66,15 @@ def clades(request, id, template='clades.html'):
     output = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput")
     ready, redirect = taskReady(sym_task)
     if ready:
-        #dirs = [d for d in os.listdir(output)
-                #if os.path.isdir(os.path.join(output, d))]
-
         with open(os.path.join(output, "ALL_counts.tsv")) as tsv:
-            all_counts = []
-            all_lines = [line.strip().split() for line in tsv]
-            #all_headers = all_lines[0]
-            all_headers = [ l.title() for l in all_lines[0] ]
-            for row in all_lines[1:]:
-                total = hit = no_hit = low = ambiguous = percentages = 0
-                site = row[0]
-                for column in row[1:]:
-                    total += int(column)
-
-                # if total != 0:
-                #     hit = round(float(row[1])/total * 100, 2)
-                #     no_hit = round(float(row[2])/total * 100, 2)
-                #     low = round(float(row[3])/total * 100, 2)
-                #     ambiguous = round(float(row[4])/total * 100, 2)
-                # percentages = [site, hit, no_hit, low, ambiguous]
-                percentages = [row[0], row[1], row[2], row[3], row[4]]
-                all_counts.append(dict(zip(all_headers, percentages)))
+            # order is maintained and we don't really reorder, so why use zip and dict?
+            all_headers = [ l.title() for l in tsv.next().strip().split() ]
+            all_counts = [ row.strip().split() for row in tsv ]
 
         with open(os.path.join(output, "DETAILED_counts.tsv")) as tsv:
-            detailed_counts = []
-
-            all_lines = [line.strip().split() for line in tsv]
-            detailed_headers = all_lines[0][1:]
-
-            for row in all_lines[1:]:
-                data = []
-                site = row[0]
-                for column in row[1:]:
-                    data.append(column)
-                detailed_counts.append(dict(zip(detailed_headers, data)))
+            # remove the sample
+            detailed_headers = tsv.next().strip().split()[1:]
+            detailed_counts = [ zip(detailed_headers, row.strip().split()[1:]) for row in tsv ]
 
         paginator1 = Paginator(all_counts, 50)
         paginator2 = Paginator(detailed_counts, 50)
@@ -131,7 +102,7 @@ def clades(request, id, template='clades.html'):
         'all_headers': all_headers,
         'all_counts': all_counts,
         'detailed_counts': detailed_counts,
-        'detailed_headers': detailed_headers,
+        #'detailed_headers': detailed_headers,
     }
 
     return render(request, template, context)
@@ -396,7 +367,6 @@ def index(request, id, template='index.html'):
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
 
-    #output = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput")
     ready, redirect = taskReady(sym_task)
     if ready:
         done = True
@@ -539,8 +509,10 @@ def dlClades(request, id):
 
     ready, redirect = taskReady(sym_task)
     if ready:
-        path = os.path.join(settings.SYMTYPER_HOME, str(id), "hmmer_parsedOutput")
-        return servZip(request, path)
+        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "clades.zip")
+        fsize = os.stat(fPath).st_size
+        filename = settings.SYMTYPER_ZIP_FMT%(str(id), "clades")
+        return servFile(request, ready, filename, fPath, fsize)
     elif redirect:
         return redirect
     else:
@@ -555,8 +527,10 @@ def dlSubtypes(request, id):
 
     ready, redirect = taskReady(sym_task)
     if ready:
-        path = os.path.join(settings.SYMTYPER_HOME, str(id), "blastResults")
-        return servZip(request, path)
+        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "subtypes.zip")
+        fsize = os.stat(fPath).st_size
+        filename = settings.SYMTYPER_ZIP_FMT%(str(id), "subtypes")
+        return servFile(request, ready, filename, fPath, fsize)
     elif redirect:
         return redirect
     else:
@@ -571,6 +545,11 @@ def dlMultiples(request, id):
 
     ready, redirect = taskReady(sym_task)
     if ready:
+        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "multiples.zip")
+        fsize = os.stat(fPath).st_size
+        filename = settings.SYMTYPER_ZIP_FMT%(str(id), "multiples")
+        return servFile(request, ready, filename, fPath, fsize)
+
         path = os.path.join(settings.SYMTYPER_HOME, str(id), "resolveMultiples", "correctedMultiplesHits")
         return servZip(request, path)
     elif redirect:
@@ -587,12 +566,15 @@ def dlTree(request, id):
 
     ready, redirect = taskReady(sym_task)
     if ready:
-        path = os.path.join(settings.SYMTYPER_HOME, str(id), "placementInfo")
-        return servZip(request, path)
+        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "trees.zip")
+        fsize = os.stat(fPath).st_size
+        filename = settings.SYMTYPER_ZIP_FMT%(str(id), "trees")
+        return servFile(request, ready, filename, fPath, fsize)
     elif redirect:
         return redirect
     else:
         return HttpResponseRedirect(reverse("status", args=[sym_task.UID]))
+
 
 def dlEverything(request, id):
     try:
@@ -604,11 +586,26 @@ def dlEverything(request, id):
     if ready:
         fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "all.zip")
         fsize = os.stat(fPath).st_size
-        filename = "symtyper_%s_all_results.zip"%(str(id))
+        filename = settings.SYMTYPER_ZIP_FMT%(str(id), "all_results")
         return servFile(request, ready, filename, fPath, fsize)
     elif redirect:
         return redirect
     else:
         return HttpResponseRedirect(reverse("status", args=[sym_task.UID]))
 
+def dlBiom(request, id):
+    try:
+        sym_task = symTyperTask.objects.get(UID=id)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect(reverse("form"))
 
+    ready, redirect = taskReady(sym_task)
+    if ready:
+        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.biom")
+        fsize = os.stat(fPath).st_size
+        filename = "breakdown.biom"
+        return servFile(request, ready, filename, fPath, fsize)
+    elif redirect:
+        return redirect
+    else:
+        return HttpResponseRedirect(reverse("status", args=[sym_task.UID]))

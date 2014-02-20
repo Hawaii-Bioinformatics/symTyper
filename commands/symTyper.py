@@ -313,8 +313,8 @@ def buildPlacementTree(args, pool):
    logging.debug("placermentTree: Done with Placement tree processing") 
 
 
-def makeBiome(args, pool):
-   logging.debug("Making the biome file")
+def makeBiom(args, pool):
+   logging.debug("Making the biom file")
    logging.debug("Consolidating the subtypes files: PERFECT, SHORTNEW, UNIQUE")
    samplesBreakDown={}
    headerSet = set() # will contain all the values seen throughout the program                                                                                                        
@@ -353,18 +353,18 @@ def makeBiome(args, pool):
                samplesBreakDown[data[0]][header[itemPos]] = int(data[itemPos])
    internalNodesFile.close()
 
-   biomeFile = open(os.path.join(args.outputs_dir, 'breakdown.biome'), "w")
-   logging.debug("Writing to the Biome file")
-   print >> biomeFile, "sample\t",
-   print >> biomeFile, "\t".join(["%s" % (x) for x in sorted(headerSet)])
+   biomFile = open(os.path.join(args.outputs_dir, 'breakdown.biom'), "w")
+   logging.debug("Writing to the Biom file")
+   print >> biomFile, "sample\t",
+   print >> biomFile, "\t".join(["%s" % (x) for x in sorted(headerSet)])
    for sample in samplesBreakDown.keys():
-      print  >> biomeFile, sample,
+      print  >> biomFile, sample,
       for header in headerSet:
-         print >> biomeFile, "\t",
-         print >> biomeFile, samplesBreakDown[sample][header] if header in samplesBreakDown[sample].keys() else 0,
-      print >> biomeFile
-   biomeFile.close()
-   logging.debug("Done Writing the biome file")
+         print >> biomFile, "\t",
+         print >> biomFile, samplesBreakDown[sample][header] if header in samplesBreakDown[sample].keys() else 0,
+      print >> biomFile
+   biomFile.close()
+   logging.debug("Done Writing the biom file")
 
 
 def main(argv):
@@ -414,7 +414,7 @@ def main(argv):
 
 
    ## BuildPlacermentTree
-   parser_subtype = subparsers.add_parser('builPlacementTree')
+   parser_subtype = subparsers.add_parser('buildPlacementTree')
    parser_subtype.add_argument('-c', '--correctedResultsDir', required=True, help=" Directory containing corrected Clade placements")
    parser_subtype.add_argument('-n', '--newickFilesDir', required=True, help="Newick directory with files having format info_clade.nwk")
    parser_subtype.add_argument('-o', '--outputDir', type=makeDirOrdie, required=True, help="Dir that will contain the newick and interenal nodes information")
@@ -428,9 +428,9 @@ def main(argv):
    parser_stats.set_defaults(func=computeStats)
 
    ## Generate BIOME file
-   parser_biome = subparsers.add_parser('makeBiome')
-   parser_biome.add_argument( '--outputs_dir',  required=True, help="Path to the directory contains the output files")
-   parser_biome.set_defaults(func=makeBiome)
+   parser_biom = subparsers.add_parser('makeBiom')
+   parser_biom.add_argument( '--outputs_dir',  required=True, help="Path to the directory contains the output files")
+   parser_biom.set_defaults(func=makeBiom)
 
 
    args = parser.parse_args()

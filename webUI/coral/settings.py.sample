@@ -173,14 +173,21 @@ TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
 )
 
+SYMTYPER_THREADS = 6
+
 SYMTYPER_HOME = os.path.join() # Where Symtyper output goes
 SYMTYPER_DBASE = os.path.join() # Where Symtyper databases are 
-SYMTYPER_IMG = os.path.join() # Where placement tree image directory gets moved to
-SYMTYPER_THREADS = 6
+SYMTYPER_HMMDB = os.path.join(SYMTYPER_DBASE, ...)
+SYMTYPER_BLASTDB = os.path.join(SYMTYPER_DBASE, ...)
+
+SYMTYPER_IMG = os.path.join(STATIC_ROOT, ...) # Where placement tree image directory gets moved to
+
 
 BIN_PATH=os.path.join()
 SYMTYPER_PATH=os.path.join(BIN_PATH, "symTyper.py")
 ZIP_EXCLUDE = os.path.join()
+
+SYMTYPER_ZIP_FMT="symtyper_%%s_%%s.zip"
 
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"

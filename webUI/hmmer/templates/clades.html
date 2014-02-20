@@ -41,14 +41,9 @@
                     <tbody>
                         {% for row in all_counts %}
                         <tr class="{% cycle '' 'altrow' %}">
-
-                            {% for header in all_headers %}
-                            {% if forloop.first %}
-                            <td> {{ row|dictvalue:header }}</td>
-                            {% else %}
-                            <td>{{ row|dictvalue:header }}</td>
-                            {% endif %}
-                            {% endfor %}
+			  {% for itm in row %}
+                            <td> {{ itm }}</td>
+			    {% endfor %}
                             <td>
                                 <a class="btn btn-default" style="width: 100%;" data-toggle="modal" href="#lightbox{{ forloop.counter }}">View Chart</a>
                             </td>
@@ -133,11 +128,10 @@ function drawChart_{{ forloop.counter }}() {
     data.addColumn('string', 'clade'); 
     data.addColumn('number', 'amount'); 
     data.addRows([
-            {% for header in detailed_headers %} 
-            ['{{ header }}',{{ row|dictvalue:header }}],
+            {% for itm in row %}
+            ['{{ itm.0 }}',{{ itm.1 }}],
             {% endfor %}
             ]);
-
     // Set chart options
     var options = {
         'backgroundColor': 'transparent',

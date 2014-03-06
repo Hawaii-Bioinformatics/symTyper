@@ -631,5 +631,6 @@ def generateBiomSampleGraph(request, uid, sample):
         sid = l[0]
         data = dict(zip(hdrs, l[1:]))
         jdata = parseHierarchyYAML(settings.HIERARCHY_YAML, sid, data)
+        
         break
     return HttpResponse(jdata, content_type = "application/json")

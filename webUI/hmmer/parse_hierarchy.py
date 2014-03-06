@@ -37,19 +37,21 @@ def parseHierarchyYAML(filename, sampleid, sampledata):
     jsonformat = {}
     jsonformat['name'] = sampleid
     jsonformat['children'] = []
-    jsonformat['color'] = "3399FF"
+    jsonformat['color'] = "#3399FF"
     colormap = yml['colors']
 
+    toplevelcolors = {}
     for k, v in yml.iteritems():
         if k == 'colors':
             continue
-
-        cdata = buildChildStructure(k, v, sampledata, colormap.get(k, colormap.get("default",["000000"]*5 ) ))
+        cmap = colormap.get(k, colormap.get("default",["#000000"]*5) ) 
+        cdata = buildChildStructure(k, v, sampledata, cmap)
         if cdata['children']:
+            toplevelcolors[k] = cmap[0]
             jsonformat['children'].append(cdata)
     internal = []
 
-    color = colormap.get("Internal Nodes", colormap.get("default",["000000"]*5 ) )
+    cmap = colormap.get("Internal Nodes", colormap.get("default",["#000000"]*5 ) )
     for name in  yml['Internal Nodes']:
         nm = name.split()[-1]
         nm = "%s_I:"%(nm)
@@ -61,17 +63,24 @@ def parseHierarchyYAML(filename, sampleid, sampledata):
                 sampledata[s] = 0
         #size = sum([ int(sd) for s, sd in sampledata.iteritems() if s.upper().startswith(nm) ])
         if size:
-            internal.append( dict(name = name, size = size, color = color[1]))
+            internal.append( dict(name = name, size = size, color = cmap[1]))
 
     if internal:
-
-        cdata = dict(name = 'Internal Nodes', children = internal, color =color[0] )
+        toplevelcolors["Internal Nodes"] = cmap[0]
+        cdata = dict(name = 'Internal Nodes', children = internal, color =cmap[0] )
         jsonformat['children'].append(cdata)
 
-    for s, sd in sampledata.iteritems():
+    cmap = colormap.get("default",["#000000"]*5)
+    internal = []
+    for s, sd in sampledata.iteritems():        
         if sd != 0:
-            print "%s\t%s"%(s, sd)
-    return json.dumps(jsonformat)
+            internal.append( dict(name = name, size = sd, color = cmap[1]))
+    if internal:
+        toplevelcolors["UNKNOWN"] = cmap[0]
+        cdata = dict(name = 'UNKNOWN', children = internal, color = cmap[0] )
+        jsonformat['children'].append(cdata)
+    
+    return json.dumps([jsonformat, toplevelcolors])
 
 
 #a = [l.strip().split() for l in open(sys.argv[2])]

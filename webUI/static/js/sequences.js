@@ -28,7 +28,7 @@
 
 
 
-var width,  height, radius, b, colors, totalSize, vis, partition, arc;
+var width,  height, radius, b, colors, sizes, totalSize, vis, partition, arc, entries;
 
 
 
@@ -40,6 +40,8 @@ function setVars(width_, height_, b_, colors_) {
     b = b_;
     colors = colors_;
     
+    sizes = {};
+    entries = {};
     partition = d3.layout.partition()
 	.size([2 * Math.PI, radius * radius])
 	.value(function(d) { return d.size; });
@@ -59,12 +61,30 @@ function setVars(width_, height_, b_, colors_) {
 
 } 
 
+function getMethods(obj) {
+    var result = [];
+    for (var id in obj) {
+	try {
+	    if (typeof(obj[id]) == "function") {
+		result.push(id + ": " + obj[id].toString());
+	    }
+	    else{
+		result.push(id + ": " + obj[id].toString());
+	    }
+		
+	} catch (err) {
+	    result.push(id + ": inaccessible");
+	}
+    }
+    return result;
+}
+
 // Main function to draw and set up the visualization, once we have the data.
 function createVisualization(json) {
     var nodes, path;
     // Basic setup of page elements.
     initializeBreadcrumbTrail();
-    drawLegend();
+
     d3.select("#togglelegend").on("click", toggleLegend);
 
     // Bounding circle underneath the sunburst, to make it easier to detect
@@ -82,15 +102,28 @@ function createVisualization(json) {
 	.attr("display", function(d) { return d.depth ? null : "none"; })
 	.attr("d", arc)
 	.attr("fill-rule", "evenodd")
-	.style("fill", function(d) { return "#" + d.color; })
+	.style("fill", function(d) { return d.color; })
 	.style("opacity", 1)
 	.on("mouseover", mouseover);
 
     // Add the mouseleave handler to the bounding circle.
     d3.select("#container").on("mouseleave", mouseleave);
-
+    
     // Get total size of the tree = value of root node from partition.
     totalSize = path.node().__data__.value;
+    for (var itm in path.node().__data__.children){
+	itm = path.node().__data__.children[itm];
+	var percentage = (100 * itm.value / totalSize).toPrecision(3);
+	var percentageString = percentage + "%";
+	if (percentage < 0.1) {
+          percentageString = "< 0.1%";
+	}
+
+	sizes[itm.name] = percentageString;
+
+    }
+    drawLegend();
+    //alert(path.node().__data__.children[0].name);
 };
 
 // Fade all but the current sequence, and show it in the breadcrumb trail.
@@ -182,7 +215,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
 
     entering.append("svg:polygon")
 	.attr("points", breadcrumbPoints)
-	.style("fill", function(d) { return colors[d.name]; });
+	.style("fill", function(d) { return d.color; });
 
     entering.append("svg:text")
 	.attr("x", (b.w + b.t) / 2)
@@ -192,9 +225,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
 	.text(function(d) { return d.name; });
 
   // Set position for entering and updating nodes.
-    g.attr("transform", function(d, i) {
-	return "translate(" + i * (b.w + b.s) + ", 0)";
-    });
+    g.attr("transform", function(d, i) {return "translate(" + i * (b.w + b.s) + ", 0)";});
 
   // Remove exiting nodes.
     g.exit().remove();
@@ -213,16 +244,16 @@ function updateBreadcrumbs(nodeArray, percentageString) {
 }
 
 function drawLegend() {
-    var li, legend, g;
+    var li, legend, g
   // Dimensions of legend item: width, height, spacing, radius of rounded rect.
-    li = {
-	w: 75, h: 30, s: 3, r: 3
-    };
+    li = {w: 190, h: 30, s: 3, r: 3};
 
     legend = d3.select("#legend").append("svg:svg")
 	.attr("width", li.w)
 	.attr("height", d3.keys(colors).length * (li.h + li.s));
 
+    for (var itm in colors){entries[itm] = itm + " - " + sizes[itm];}
+    
     g = legend.selectAll("g")
 	.data(d3.entries(colors))
 	.enter().append("svg:g")
@@ -242,7 +273,8 @@ function drawLegend() {
 	.attr("y", li.h / 2)
 	.attr("dy", "0.35em")
 	.attr("text-anchor", "middle")
-	.text(function(d) { return d.key; });
+	.text(function(d) { 
+	    return entries[d.key]; });
 }
 
 function toggleLegend() {

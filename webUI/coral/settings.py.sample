@@ -190,6 +190,8 @@ ZIP_EXCLUDE = os.path.join()
 
 SYMTYPER_ZIP_FMT="symtyper_%%s_%%s.zip"
 
+HIERARCHY_YAML = os.path.join(SYMTYPER_DBASE, "Symtyper_hierarchy.yaml")
+
 
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 CELERY_TASK_RESULT_EXPIRES = 3600

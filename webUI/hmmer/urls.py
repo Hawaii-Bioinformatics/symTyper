@@ -32,6 +32,10 @@ urlpatterns = patterns('',
 
     # stats                       
     url(r'^(?P<uid>\d+\.\d+\.\d+)/stats/', 'hmmer.views.descriptiveStats', name = 'descStats'),
+
+    #biom sample sunbursts
+    url(r'^(?P<uid>\d+\.\d+\.\d+)/(?P<sample>[^/]+)/biom/$', 'hmmer.views.biomGraph', name="biomburst"),
+    url(r'^json/biom/burst/(?P<uid>\d+\.\d+\.\d+)/(?P<sample>[^/]+)/', 'hmmer.views.generateBiomSampleGraph', name = 'json_biomburst'),
     #############
     # DOWNLOADS #
     #############

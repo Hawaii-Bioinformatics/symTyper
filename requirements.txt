@@ -4,3 +4,5 @@ django-widget-tweaks
 South
 django-celery
 django-htmlmin
+PyYAML
+biom-format

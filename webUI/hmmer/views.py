@@ -1,5 +1,5 @@
 from django.template import RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.shortcuts import render
 
@@ -14,6 +14,8 @@ from general import writeFile, searchTable, csv2list, treeCsv, multiplesCsv, ser
 from forms import InputForm
 from models import  symTyperTask
 from tasks import handleForm
+from parse_hierarchy import parseHierarchyYAML
+
 
 import os
 import time
@@ -609,3 +611,25 @@ def dlBiom(request, id):
         return redirect
     else:
         return HttpResponseRedirect(reverse("status", args=[sym_task.UID]))
+
+def biomGraph(request, uid, sample, template = "biom_graph.html"):
+    
+    return render_to_response(template, RequestContext(request, dict(sample = sample, uid = uid, id = uid)  ))        
+
+
+
+def generateBiomSampleGraph(request, uid, sample):
+    biof = os.path.join(settings.SYMTYPER_HOME, str(uid), "breakdown.biom")
+    biom = open(biof)
+    hdrs = biom.next().strip().split()
+    hdrs = hdrs[1:] # remove the header 'sample'
+    jdata = None
+    for l in biom:
+        if not l.startswith(sample):
+            continue
+        l = l.strip().split()
+        sid = l[0]
+        data = dict(zip(hdrs, l[1:]))
+        jdata = parseHierarchyYAML(settings.HIERARCHY_YAML, sid, data)
+        break
+    return HttpResponse(jdata, content_type = "application/json")

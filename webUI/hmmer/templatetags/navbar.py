@@ -25,6 +25,11 @@ def navbar(context, id):
     ## Trees
     tPath = os.path.join(settings.SYMTYPER_HOME, str(id), "placementInfo")
 
+    biof = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.biom")
+    biom = open(biof)
+    biom.next()
+    samples = [l.split()[0].strip() for l in biom]
+
     for letter in letters:
 
         if os.path.exists(os.path.join(cPath, str(letter))) or os.path.exists(os.path.join(rPath, str(letter))):
@@ -54,6 +59,7 @@ def navbar(context, id):
         'multiples': multiples,
         'trees': trees,
         'request': context['request'],
+        'samples': samples,
         'done': done,
     }
 

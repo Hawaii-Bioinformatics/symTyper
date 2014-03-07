@@ -612,8 +612,9 @@ def dlBiom(request, id):
     else:
         return HttpResponseRedirect(reverse("status", args=[sym_task.UID]))
 
-def biomGraph(request, uid, sample, template = "biom_graph.html"):
-    
+
+
+def biomGraph(request, uid, sample, template = "biom_graph.html"):   
     return render_to_response(template, RequestContext(request, dict(sample = sample, uid = uid, id = uid)  ))        
 
 

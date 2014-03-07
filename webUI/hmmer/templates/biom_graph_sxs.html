@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block head %}
+<title>Biom - Sample: {{sample}}</title>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" />
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/sequences.css"/>
+{% endblock %}
+
+{% block body %}
+<div class="container" id = "container_1">
+  <div id="main_1" class="main">
+    <div id="sequence_1" class="sequence" ></div>
+    <div id="chart_1" class="chart"></div>
+    <div id="explanation_1" class="explanation" style= "visibility: hidden" ><span class="percentage" id="percentage_1"></span> <br /> of sample {{sample}}</div>
+  </div>
+  <div id="sidebar_1" class="sidebar">
+    {#<input type="checkbox" id="togglelegend_1" />Legend<br/>#}
+    <div id="legend_1" class="legend" {# style="visibility: hidden;"#}></div>
+  </div>
+</div>
+<div class="container" id = "container_2">
+  <div id="main_2" class="main">
+    <div id="sequence_2" class="sequence" ></div>
+    <div id="chart_2" class="chart"></div>
+    <div id="explanation_2" class="explanation" style= "visibility: hidden" ><span class="percentage" id="percentage_2"></span> <br /> of sample {{sample}}</div>
+  </div>
+  <div id="sidebar_2" class="sidebar">
+    {#<input type="checkbox" id="togglelegend_2" />Legend<br/>#}
+    <div id="legend_2" class="legend" {# style="visibility: hidden;"#}></div>
+  </div>
+</div>
+
+<script type="text/javascript" src="{{ STATIC_URL }}/js/sequences.min.js"></script>
+<script type="text/javascript">
+  d3.json( '{% url 'json_biomburst' uid=uid sample=sample %}', function(error, json) {
+  if (error){return console.warn(error);}
+  var bb, clr;
+  bb = { w: 140, h: 30, s: 3, t: 10};
+  clr = json[1];
+  graph1 = new Sun_Burst(475, 900, bb , clr, 1);
+  graph1.createVisualization(json[0])
+  });
+
+  d3.json( '{% url 'json_biomburst' uid=uid sample="175M" %}', function(error, json) {
+  if (error){return console.warn(error);}
+  var bb, clr;
+  bb = { w: 140, h: 30, s: 3, t: 10};
+  clr = json[1];
+  graph2 = new Sun_Burst(475, 900, bb , clr, 2);
+  graph2.createVisualization(json[0])
+  });
+</script>
+
+
+{% endblock %}
+

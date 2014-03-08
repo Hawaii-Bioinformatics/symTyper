@@ -20,7 +20,9 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Compare to<b class="caret"></b></a>
       <ul class = "dropdown-menu">
 	{% for k in sampleids %}
+	{% if k != sample %}
 	<li><a href="{% url 'biomburst_sxs' id sample k %}">{{sample}} vs. {{ k }}</a></li>
+	{% endif %}
 	{% endfor %}
       </ul>
     </li>

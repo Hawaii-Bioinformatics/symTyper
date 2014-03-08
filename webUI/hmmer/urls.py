@@ -35,7 +35,7 @@ urlpatterns = patterns('',
 
     #biom sample sunbursts
     url(r'^(?P<uid>\d+\.\d+\.\d+)/(?P<sample>[^/]+)/biom/$', 'hmmer.views.biomGraph', name="biomburst"),
-    url(r'^(?P<uid>\d+\.\d+\.\d+)/(?P<sample>[^/]+)/biom/sxs/$', 'hmmer.views.biomGraph',{'template':"biom_graph_sxs.html"},  name="biomburst_sxs"),
+    url(r'^(?P<uid>\d+\.\d+\.\d+)/(?P<sampleA>[^/]+)/(?P<sampleB>[^/]+)/biom/sxs/$', 'hmmer.views.biomGraphSXS',{'template':"biom_graph_sxs.html"},  name="biomburst_sxs"),
     url(r'^json/biom/burst/(?P<uid>\d+\.\d+\.\d+)/(?P<sample>[^/]+)/', 'hmmer.views.generateBiomSampleGraph', name = 'json_biomburst'),
     #############
     # DOWNLOADS #

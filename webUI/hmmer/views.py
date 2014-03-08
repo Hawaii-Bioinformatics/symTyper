@@ -615,7 +615,15 @@ def dlBiom(request, id):
 
 
 def biomGraph(request, uid, sample, template = "biom_graph.html"):   
-    return render_to_response(template, RequestContext(request, dict(sample = sample, uid = uid, id = uid)  ))        
+    biof = os.path.join(settings.SYMTYPER_HOME, uid, "breakdown.biom")
+    biom = open(biof)
+    biom.next()
+    sampleids = [l.split()[0].strip() for l in biom]
+    biom.close()
+    return render_to_response(template, RequestContext(request, dict(sampleids = sampleids, sample = sample, uid = uid, id = uid)  ))        
+
+def biomGraphSXS(request, uid, sampleA, sampleB, template = "biom_graph_sxs.html"):   
+    return render_to_response(template, RequestContext(request, dict(sampleA = sampleA, sampleB = sampleB,  uid = uid, id = uid)  ))        
 
 
 

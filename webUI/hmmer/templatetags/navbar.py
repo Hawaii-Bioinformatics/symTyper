@@ -24,11 +24,8 @@ def navbar(context, id):
     rPath = os.path.join(settings.SYMTYPER_HOME, str(id), "resolveMultiples", "correctedMultiplesHits", "resolved")
     ## Trees
     tPath = os.path.join(settings.SYMTYPER_HOME, str(id), "placementInfo")
-
-    biof = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.biom")
-    biom = open(biof)
-    biom.next()
-    samples = [l.split()[0].strip() for l in biom]
+    samples = []
+    
 
     for letter in letters:
 
@@ -50,6 +47,15 @@ def navbar(context, id):
         ready, redirect = taskReady(sym_task)
         if ready:
             done = True
+
+    if done:
+        try:
+            biof = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.biom")
+            biom = open(biof)
+            biom.next()
+            samples = [l.split()[0].strip() for l in biom]
+        except:
+            pass
 
     context = {
         'id': id,

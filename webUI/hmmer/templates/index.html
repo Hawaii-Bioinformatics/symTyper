@@ -18,7 +18,7 @@
                   {#<li><a href="https://github.com/bingo11/symTyper/wiki/documentation">Documentation</a></li>#}
                   <li><a href="#">Contact</a></li>
                     <li><a href="{% url 'dlEverything' id %}">Download All</a></li>
-                    <li><a href="{% url 'dlBiom' id %}">Download BIOM</a></li>
+                    <li><a href="{% url 'dlBiom' id %}">Download BIOM (tsv)</a></li>
                 </ul>
             </div>
         </div>
@@ -28,11 +28,7 @@
 	      {% include 'stats.html' %}
             </div>
         </div>
-        <div class="col-md-4">
-	  {#<div class = "well">#}
-	  {#<h2>&nbsp;</h2>#}
-	  {#</div>#}
-	</div>
+        <div class="col-md-4"></div>
         {% else %}
         <div class="col-md-6 col-md-offset-3">
             <div class="well">

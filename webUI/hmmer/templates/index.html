@@ -16,7 +16,6 @@
             <div class="well">
                 <ul class="nav sidebar">
                   {#<li><a href="https://github.com/bingo11/symTyper/wiki/documentation">Documentation</a></li>#}
-                  <li><a href="#">Contact</a></li>
                     <li><a href="{% url 'dlEverything' id %}">Download All</a></li>
                     <li><a href="{% url 'dlBiom' id %}">Download BIOM (tsv)</a></li>
                 </ul>
@@ -32,8 +31,9 @@
         {% else %}
         <div class="col-md-6 col-md-offset-3">
             <div class="well">
-                <p>SymTyper is Running and may take some time to finish. To see the
-                output when Symtyper is done please follow the link: (button does not work yet, copy paste it manually)<p>
+                <p>SymTyper is currently running and may take some time to finish. The results will be displayed on this page</p>
+                <p>Please note that the results will be stored for 14 days after successful completion of the run and can be accessed using the url below.</p>
+
 
 
                 <div class="input-group">

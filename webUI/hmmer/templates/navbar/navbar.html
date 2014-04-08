@@ -24,7 +24,7 @@
                         <li{% if request.path == documentation %} class="active"{% endif %}><a href="https://github.com/bingo11/symTyper/wiki/documentation">Documentation</a></li>
                         <li{% if request.path == contact %} class="active"{% endif %}><a href="#">Contact</a></li>
                         {% else %}
-                        <li{% if request.path == index %} class="active"{% endif %}><a href="{{ index }}">Home</a></li>
+                        <li{% if request.path == index %} class="active"{% endif %}><a href="{{ index }}">Main</a></li>
                         <li{% if request.path == clades %} class="active"{% endif %}><a href="{{ clades }}">Clades</a></li>
                         <li class="dropdown{% if request.path == subtypes %} active {% endif %}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Subtypes <b class="caret"></b></a>

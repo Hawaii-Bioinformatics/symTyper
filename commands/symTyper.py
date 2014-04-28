@@ -335,10 +335,10 @@ def makeBiom(args, pool):
                   samplesBreakDown[data[0]][header[itemPos]] += int(data[itemPos])
                else:
                   samplesBreakDown[data[0]][header[itemPos]] = int(data[itemPos])
+
    logging.debug("Adding the internal nodes information")
    for myDir in os.listdir(os.path.join(args.outputs_dir, 'placementInfo')):
       internalNodesFile = open(os.path.join(args.outputs_dir, 'placementInfo', myDir, 'treenodeCladeDist.tsv'))
-
       header = internalNodesFile.readline().split()
       headerSet = headerSet.union(header[1:])
       if len(header) > 1:  # if I have at least one header                                                                                                                            
@@ -347,7 +347,7 @@ def makeBiom(args, pool):
             if not samplesBreakDown.has_key(data[0]):
                samplesBreakDown[data[0]] ={}
             for itemPos in range(1, len(header)):
-               #printVerbose("%s\t%s\t%s"%(data[0], header[itemPos], data[itemPos]) )
+               printVerbose("%s\t%s\t%s"%(data[0], header[itemPos], data[itemPos]) )
                #raw_input()                                                                                                                                                           
                # no need to check if the node is going to be in the file as we know it is going to be UNIQUE                                                                          
                samplesBreakDown[data[0]][header[itemPos]] = int(data[itemPos])
@@ -356,12 +356,14 @@ def makeBiom(args, pool):
    biomFile = open(os.path.join(args.outputs_dir, 'breakdown.biom'), "w")
    logging.debug("Writing to the Biom file")
    print >> biomFile, "sample\t",
-   print >> biomFile, "\t".join(["%s" % (x) for x in sorted(headerSet)])
+   sortedHeaders= sorted(headerSet)
+   print >> biomFile, "\t".join(["%s" % (x) for x in sortedHeaders])
    for sample in samplesBreakDown.keys():
       print  >> biomFile, sample,
-      for header in headerSet:
+      for header in sortedHeaders:
          print >> biomFile, "\t",
          print >> biomFile, samplesBreakDown[sample][header] if header in samplesBreakDown[sample].keys() else 0,
+         printVerbose( "%s\t%s\t%s"%(sample, header, samplesBreakDown[sample].get(header, 0)))
       print >> biomFile
    biomFile.close()
    logging.debug("Done Writing the biom file")

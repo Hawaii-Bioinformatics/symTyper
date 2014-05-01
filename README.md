@@ -2,10 +2,8 @@
 Some description here.
 
 ## Dependencies
-* Python 2.7
+* [Python 2.7](https://www.python.org/)
 * Python pacakges in [requirements.txt](requirements.txt)
-
-
 
 ## Pipeline Flow
 ```
@@ -23,6 +21,26 @@ operate correctly.
 
 ## Command arguments
 
+### General
+```
+usage: symTyper.py [-h] [-v] [--verbose] [-t THREADS]
+                   
+                   {stats,makeBiom,clade,buildPlacementTree,subtype,resolveMultipleHits}
+                   ...
+
+symTyper Description
+
+positional arguments:
+  {stats,makeBiom,clade,buildPlacementTree,subtype,resolveMultipleHits}
+                        Available commands
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  --verbose             increase output verbosity
+  -t THREADS, --threads THREADS
+
+```
 
 ### clade
 ```

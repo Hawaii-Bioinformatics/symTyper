@@ -2,4 +2,4 @@ xvfb (virtual x server apt-get install xvfb)
 yui-compressor
 nodejs
 lessc
-
+symTyper command line

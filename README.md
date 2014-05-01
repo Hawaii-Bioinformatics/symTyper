@@ -3,7 +3,8 @@ Some description here.
 
 ## Dependencies
 * Python 2.7
-* Python pacakges in requirements.txt
+* Python pacakges in [requirements.txt](requirements.txt)
+
 
 
 ## Pipeline Flow

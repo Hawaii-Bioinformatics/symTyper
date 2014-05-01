@@ -1,9 +1,6 @@
-biopython >= 1.61
-ete2
 django
 django-widget-tweaks
 South
 django-celery
 django-htmlmin
 PyYAML
-biom-format

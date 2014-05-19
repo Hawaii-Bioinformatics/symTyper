@@ -276,7 +276,10 @@ def resolveMultipleHits(args, pool):
 
    # WARNING this shoud work fine as long as each clstr file not very large. 
    for sample in samples:
-      with open(os.path.join(args.clustersDir, "clusters", sample)) as infile:
+      smplFile = os.path.join(args.clustersDir, "clusters", sample)
+      if not os.path.isfile(smplFile):
+         continue
+      with open(smplFile) as infile:
             allRepsFasta.write(infile.read())
    allRepsFasta.close()
    logging.debug("resolveMultipleHits: clustering concatenated all reps")
@@ -351,7 +354,7 @@ def makeBiom(args, pool):
                #raw_input()                                                                                                                                                           
                # no need to check if the node is going to be in the file as we know it is going to be UNIQUE                                                                          
                samplesBreakDown[data[0]][header[itemPos]] = int(data[itemPos])
-   internalNodesFile.close()
+      internalNodesFile.close()
 
    biomFile = open(os.path.join(args.outputs_dir, 'breakdown.biom'), "w")
    logging.debug("Writing to the Biom file")

@@ -76,9 +76,10 @@ class CD_HitParser(object):
         clusterId = ""
         self.sample_clustersSeqs[sample]={}
         self.sample_sequenceCluster[sample]={}
-        
-
-        with open(os.path.join(self.samplesClustDir, sample+'.clstr'),'r' ) as sampleClusters:
+        clstrFile = os.path.join(self.samplesClustDir, sample+'.clstr')
+        if not os.path.isfile(clstrFile):
+            return
+        with open(clstrFile,'r' ) as sampleClusters:
             for line in sampleClusters:
                 line = line.rstrip()
                 if line.startswith(">"):

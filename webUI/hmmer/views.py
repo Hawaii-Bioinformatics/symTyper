@@ -643,3 +643,5 @@ def generateBiomSampleGraph(request, uid, sample):
         
         break
     return HttpResponse(jdata, content_type = "application/json")
+
+

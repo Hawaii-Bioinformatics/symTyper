@@ -19,6 +19,7 @@ class symTyperTask(models.Model):
     state = models.IntegerField(default = NOT_STARTED, choices = STATES, blank = False, null = False)
     modified = models.DateField(auto_now = True)
     created = models.DateField(auto_now_add = True)
+    params = models.TextField(null = False, blank = False)
 
 class AdminSymTyperTask(admin.ModelAdmin):
     list_display = ['celeryUID', 'UID', 'created', 'modified']

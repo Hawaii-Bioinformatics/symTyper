@@ -27,7 +27,25 @@
 	      {% include 'stats.html' %}
             </div>
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-4 well">
+	  <h2>Parameters</h2>
+	  {% for section, val in params.items %}
+	   <h3>{{section}}</h3>
+	   {% for v in val %}
+	    {% if forloop.first %}
+	   <table class = "table-bordered table-condensed table-striped cf">
+	   {% endif %}
+	   <tr class="{% cycle '' 'altrow' %}"><td>{{v.0}}</td><td>{{v.1}}</td></tr>
+	    {% if forloop.last %}
+	   </table>
+	   {% endif %}
+	   {% endfor %}
+	  {% endfor %}
+	  
+	</div>
+
+
+
         {% else %}
         <div class="col-md-6 col-md-offset-3">
             <div class="well">

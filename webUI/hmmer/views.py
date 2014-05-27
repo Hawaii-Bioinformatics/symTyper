@@ -19,7 +19,8 @@ from parse_hierarchy import parseHierarchyYAML
 
 import os
 import time
-
+from collections import defaultdict
+import yaml
 # Create your views here.
 
 
@@ -70,7 +71,7 @@ def clades(request, id, template='clades.html'):
     if ready:
         with open(os.path.join(output, "ALL_counts.tsv")) as tsv:
             # order is maintained and we don't really reorder, so why use zip and dict?
-            all_headers = [ l.title() for l in tsv.next().strip().split() ]
+            all_headers = [ l for l in tsv.next().strip().split() ]
             all_counts = [ row.strip().split() for row in tsv ]
 
         with open(os.path.join(output, "DETAILED_counts.tsv")) as tsv:
@@ -368,7 +369,6 @@ def index(request, id, template='index.html'):
         sym_task = symTyperTask.objects.get(UID=id)
     except ObjectDoesNotExist:
         return HttpResponseRedirect(reverse("form"))
-
     ready, redirect = taskReady(sym_task)
     if ready:
         done = True
@@ -377,10 +377,20 @@ def index(request, id, template='index.html'):
     else:
         pass
         #message = "pending..."
+
     if done:
         context = descriptiveStats(id)
+        params = yaml.load(sym_task.params)
+        parm = defaultdict(list)
+        for k, v in params.iteritems():
+            section, label = k.replace('+',' ').split("_")
+            parm[section.title()].append( (label, v,))
+        for k in parm:
+            parm[k].sort(key = lambda x: x[0])
+
         context['done'] = done
         context['id'] = id
+        context['params'] = dict(parm)
     else:
         context= {
             'done': done, 

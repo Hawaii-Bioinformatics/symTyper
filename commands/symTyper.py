@@ -317,7 +317,7 @@ def buildPlacementTree(args, pool):
 
 
 def makeBiom(args, pool):
-   logging.debug("Making the biom file")
+   logging.debug("Making the tsv file")
    logging.debug("Consolidating the subtypes files: PERFECT, SHORTNEW, UNIQUE")
    samplesBreakDown={}
    headerSet = set() # will contain all the values seen throughout the program                                                                                                        
@@ -356,8 +356,8 @@ def makeBiom(args, pool):
                samplesBreakDown[data[0]][header[itemPos]] = int(data[itemPos])
       internalNodesFile.close()
 
-   biomFile = open(os.path.join(args.outputs_dir, 'breakdown.biom'), "w")
-   logging.debug("Writing to the Biom file")
+   biomFile = open(os.path.join(args.outputs_dir, 'breakdown.tsv'), "w")
+   logging.debug("Writing to the tsv file")
    print >> biomFile, "sample\t",
    sortedHeaders= sorted(headerSet)
    print >> biomFile, "\t".join(["%s" % (x) for x in sortedHeaders])
@@ -369,7 +369,7 @@ def makeBiom(args, pool):
          printVerbose( "%s\t%s\t%s"%(sample, header, samplesBreakDown[sample].get(header, 0)))
       print >> biomFile
    biomFile.close()
-   logging.debug("Done Writing the biom file")
+   logging.debug("Done Writing the tsv file")
 
 
 def main(argv):
@@ -433,7 +433,7 @@ def main(argv):
    parser_stats.set_defaults(func=computeStats)
 
    ## Generate BIOME file
-   parser_biom = subparsers.add_parser('makeBiom')
+   parser_biom = subparsers.add_parser('makeTSV')
    parser_biom.add_argument( '--outputs_dir',  required=True, help="Path to the directory contains the output files")
    parser_biom.set_defaults(func=makeBiom)
 

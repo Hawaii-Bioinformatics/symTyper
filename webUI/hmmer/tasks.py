@@ -31,7 +31,7 @@ def handleForm(fasta, sample, inputform, uid):
     ret = os.system("""%s -t %s resolveMultipleHits -s %s -m blastResults/MULTIPLE/ -c resolveMultiples/ """%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, sample))
     ret = os.system("""xvfb-run  %s -t %s buildPlacementTree -c resolveMultiples/correctedMultiplesHits/corrected -n %s -o placementInfo """%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, os.path.join(settings.SYMTYPER_DBASE, "clades_phylogenies") ) )
     ret = os.system("""%s -t %s stats --outputs_dir %s -i %s --out_file %s """%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, parentDir, fasta, os.path.join(parentDir,"outputfile")) )
-    ret = os.system("""%s -t %s makeBiom --outputs_dir %s"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, parentDir)) 
+    ret = os.system("""%s -t %s makeTSV --outputs_dir %s"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, parentDir)) 
 
     os.makedirs(imageDir)
     ret = os.system("""chgrp -R www-data %s """%(parentDir))

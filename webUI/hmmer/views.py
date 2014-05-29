@@ -615,9 +615,9 @@ def dlBiom(request, id):
 
     ready, redirect = taskReady(sym_task)
     if ready:
-        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.biom")
+        fPath = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.tsv")
         fsize = os.stat(fPath).st_size
-        filename = "breakdown.biom"
+        filename = "breakdown.tsv"
         return servFile(request, ready, filename, fPath, fsize)
     elif redirect:
         return redirect
@@ -627,7 +627,7 @@ def dlBiom(request, id):
 
 
 def biomGraph(request, uid, sample, template = "biom_graph.html"):   
-    biof = os.path.join(settings.SYMTYPER_HOME, uid, "breakdown.biom")
+    biof = os.path.join(settings.SYMTYPER_HOME, uid, "breakdown.tsv")
     biom = open(biof)
     biom.next()
     sampleids = [l.split()[0].strip() for l in biom]
@@ -640,7 +640,7 @@ def biomGraphSXS(request, uid, sampleA, sampleB, template = "biom_graph_sxs.html
 
 
 def generateBiomSampleGraph(request, uid, sample):
-    biof = os.path.join(settings.SYMTYPER_HOME, str(uid), "breakdown.biom")
+    biof = os.path.join(settings.SYMTYPER_HOME, str(uid), "breakdown.tsv")
     biom = open(biof)
     hdrs = biom.next().strip().split()
     hdrs = hdrs[1:] # remove the header 'sample'

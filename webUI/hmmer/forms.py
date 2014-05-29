@@ -32,7 +32,7 @@ class InputForm(forms.Form):
     def yamlfyParams(self):
         """{clade_e-value: 1.0e-20, clade_e-value+differences: 100000.0, resolve+multiplie+hits_similarity: 0.97, subtype_e-value: 1.0e-05}"""
         return yaml.dump({ 'clade_e-value' : self.cleaned_data['clade_evalue'],
-          'clade_e-value+differences:' : self.cleaned_data['clade_evalDiff'],
-          'resolve+multiplie+hits_similarity:' : self.cleaned_data['resolveMulti_similarity'],
-          'subtype_e-value:' : self.cleaned_data['subtype_evalue']})
+          'clade_e-value+differences' : self.cleaned_data['clade_evalDiff'],
+          'resolve+multiplie+hits_similarity' : self.cleaned_data['resolveMulti_similarity'],
+          'subtype_e-value' : self.cleaned_data['subtype_evalue']})
  

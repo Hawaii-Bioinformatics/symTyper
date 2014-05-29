@@ -36,7 +36,9 @@ def inputFormDisplay(request, template='upload.html'):
             # create UID
             sym_task = symTyperTask.objects.create()
             sym_task.UID = str(sym_task.id) + '.' + str(time.time())
+            sym_task.params = form.yamlfyParams()
             sym_task.save()
+
             parentDir = os.path.join(settings.SYMTYPER_HOME, sym_task.UID)
 
             os.makedirs(parentDir)

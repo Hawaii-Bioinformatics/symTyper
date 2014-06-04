@@ -384,15 +384,25 @@ def index(request, id, template='index.html'):
         context = descriptiveStats(id)
         params = yaml.load(sym_task.params)
         parm = defaultdict(list)
-        for k, v in params.iteritems():
-            section, label = k.replace('+',' ').split("_")
-            parm[section.title()].append( (label, v,))
-        for k in parm:
-            parm[k].sort(key = lambda x: x[0])
+        version = params.pop('version_tag',1)
+        ordering = [p.title() for p in params.pop('order', [])]
+        if version == 1:
+            for k, v in params.iteritems():
+                section, label = k.replace('+',' ').split("_")
+                parm[section.title()].append( (label, v,))
+            for k in parm:
+                parm[k].sort(key = lambda x: x[0])
+
+        elif version == 2:
+            for section, v in params.iteritems():
+                k = section.title()
+                parm[k] = v.items()
+                parm[k].sort(key = lambda x: x[0])
 
         context['done'] = done
         context['id'] = id
         context['params'] = dict(parm)
+        context['order'] = ordering
     else:
         context= {
             'done': done, 

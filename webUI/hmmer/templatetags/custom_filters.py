@@ -5,8 +5,8 @@ from django.utils.datastructures import SortedDict
 register = template.Library()
 
 @register.filter
-def dictvalue(dict, key):
-    return dict[key]
+def dictvalue(dictionary, key):
+    return dictionary.get(key, None)
 
 #File: custom_filters.py
 # Author: http://cookingupawebsiteindjango.blogspot.com/2009/05/custom-template-filters-manipulating.html

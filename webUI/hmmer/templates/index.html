@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load custom_filters %}
 
 {% block head %}
 <title>symTyper</title>
@@ -29,9 +30,9 @@
         </div>
         <div class="col-md-4 well">
 	  <h2>Parameters</h2>
-	  {% for section, val in params.items %}
+	  {% for section in order %}
 	   <h3>{{section}}</h3>
-	   {% for v in val %}
+	   {% for v in params|dictvalue:section  %}
 	    {% if forloop.first %}
 	   <table class = "table-bordered table-condensed table-striped cf">
 	   {% endif %}

@@ -30,9 +30,22 @@ class InputForm(forms.Form):
         return data
 
     def yamlfyParams(self):
-        """{clade_e-value: 1.0e-20, clade_e-value+differences: 100000.0, resolve+multiplie+hits_similarity: 0.97, subtype_e-value: 1.0e-05}"""
-        return yaml.dump({ 'clade_e-value' : self.cleaned_data['clade_evalue'],
-          'clade_e-value+differences' : self.cleaned_data['clade_evalDiff'],
-          'resolve+multiplie+hits_similarity' : self.cleaned_data['resolveMulti_similarity'],
-          'subtype_e-value' : self.cleaned_data['subtype_evalue']})
+        """
+        Currently, the dictionary keys are an encoding for the section and the field name.
+        We replace all spaces with + and we use _ to seperate the section from the field.
+        """
+
+        return yaml.dump(
+            { 'version_tag': 2,
+              'order': ['clade', 'subtype', 'resolve multiplie hits'],
+              'clade': {'e-value' : self.cleaned_data['clade_evalue'], 'e-value differences' : self.cleaned_data['clade_evalDiff']},
+              'resolve multiplie hits': {'similarity' : self.cleaned_data['resolveMulti_similarity']},
+              'subtype': {'e-value' : self.cleaned_data['subtype_evalue']}
+              }
+            )
+
+#        return yaml.dump({ 'clade_e-value' : self.cleaned_data['clade_evalue'],
+#          'clade_e-value+differences' : self.cleaned_data['clade_evalDiff'],
+#          'resolve+multiplie+hits_similarity' : self.cleaned_data['resolveMulti_similarity'],
+#          'subtype_e-value' : self.cleaned_data['subtype_evalue']})
  

@@ -4,10 +4,11 @@ import os
 from Helpers import printVerbose
 
 class CladeParser(object):
-    def __init__(self, inFile, outputDirPath, minEval=1e-20):
+    def __init__(self, inFile, outputDirPath, minEval=1e-20, minFracLength = 0.87):
         self.inFile = inFile
         self.outputDirPath = outputDirPath
         self.minEval= minEval
+        self.minFracLength = minFracLength
 
     def run(self):
         printVerbose("+++++"+self.outputDirPath+"++++++")
@@ -16,7 +17,15 @@ class CladeParser(object):
         hitsFile = open(os.path.join(self.outputDirPath, "HIT"), 'w')
         noHitsFile = open(os.path.join(self.outputDirPath, "NOHIT"), 'w')
         for seq in Bio.SearchIO.parse(self.inFile, 'hmmer3-text'):
-            if len(seq.hits) > 1:
+
+            aliLen = sum([len(f) for f in seq.hits[0].fragments])
+            
+            # if hits are short, log it and continue to the next seq.                                                                                                          
+            if float(aliLen)/seq.seq_len < self.minFracLength:
+                noHitsFile.write("seqId:%s\n" % (seq.id) )
+                continue
+
+            if len(seq.hits) >= 1:
                 if seq.hits[0].evalue > self.minEval:
                     lowFile.write("LOW:%s\t%s\t%s\n" % (seq.id, seq.hits[0].id, seq.hits[0].evalue));
                     continue

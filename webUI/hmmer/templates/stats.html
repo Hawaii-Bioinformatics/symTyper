@@ -1,3 +1,10 @@
+{% if error %}
+<h4>An error occurred while processing your data.</h4>
+<o>
+<br />Before resubmitting your data, please verify that the ids you provided in your sample file match those found in your fasta file.
+<br />Also make sure that the sequence ids in your fasta file follow the format used in the sample.fasta file.</p>
+<strong>Faste file sequence header format: </strong> >[id]::[unique number] (description)
+{% else %}
 <h2>Descriptive Statistics</h2>
 <div class="table-responsive">
   
@@ -41,3 +48,4 @@
   </table>
   <br />
 </div>
+{% endif %}

@@ -413,7 +413,11 @@ def index(request, id, template='index.html'):
 
 def descriptiveStats(uid):
     statsfile = open(os.path.join(settings.SYMTYPER_HOME, str(uid), "outputfile"))
-    stats = eval(statsfile.read())
+    # DLS TODO: some type of parsing erorr... chekc vs 48.14...
+    try:
+        stats = eval(statsfile.read())
+    except:
+        return dict( error = "Error processing data", uid = uid, fullset = [], clade = [], subclade = [], multi = [])
     statsfile.close()
 
     fullset =[ ('Total', stats['fastaFileSize'],) , ('Symbiodinium', stats['totalSymbioHits'],), ('Other', stats['totalNonSymbioHits'] ,) ]

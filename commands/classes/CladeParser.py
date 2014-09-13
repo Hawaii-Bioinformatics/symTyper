@@ -23,25 +23,29 @@ class CladeParser(object):
                 # if hits are short, log it and continue to the next seq.                                                                                                          
                 if float(aliLen)/seq.seq_len < self.minFracLength:
                     noHitsFile.write("seqId:%s\n" % (seq.id) )
-                    continue
-
-                if seq.hits[0].evalue > self.minEval:
-                    lowFile.write("LOW:%s\t%s\t%s\n" % (seq.id, seq.hits[0].id, seq.hits[0].evalue));
-                    continue
+                    #continue
+                elif seq.hits[0].evalue > self.minEval:
+                    lowFile.write("LOW:%s\t%s\t%s\n" % (seq.id, seq.hits[0].id, seq.hits[0].evalue))
+                    #continue
                 else:
                     if len(seq.hits) > 1:
                         if (seq.hits[1].evalue / seq.hits[0].evalue) < 1e5:                
                             ambiguousFile.write("AMBIGUOUS:%s\t%s\t%s\t%s\t%s\n"
-                                                % (seq.id, seq.hits[0].id, seq.hits[1].id, seq.hits[0].evalue, seq.hits[1].evalue));
-                            continue
-                    # previous continue shortcircuits the following
-                    hitsFile.write("%s\t%s\t%s\t%s\t%s\t%s\t%s\n"
-                                   % (seq.id, seq.hits[0].hsps[0].query_start, seq.hits[0].hsps[0].query_end,  
-                                      seq.hits[0].id, seq.hits[1].id, seq.hits[0].evalue, seq.hits[1].evalue))
-                    continue
+                                                % (seq.id, seq.hits[0].id, seq.hits[1].id, seq.hits[0].evalue, seq.hits[1].evalue))
+                            #continue
+                        else:
+                            # DLS previously did not verify we had more than 1 hit, as a result we had index out of bound errors
+                            # I corrected this by making an else case and adding annother else case if we only have 1 hit (make it a NOHIT)
+                            #previous continue shortcircuits the following
+                            hitsFile.write("%s\t%s\t%s\t%s\t%s\t%s\t%s\n"
+                                           % (seq.id, seq.hits[0].hsps[0].query_start, seq.hits[0].hsps[0].query_end,  
+                                              seq.hits[0].id, seq.hits[1].id, seq.hits[0].evalue, seq.hits[1].evalue))
+                            #continue
+                    else:
+                        noHitsFile.write("seqId:%s\n" % (seq.id) )
             else:
-                noHitsFile.write("seqId:%s\n" % (seq.id) );
-                continue
+                noHitsFile.write("seqId:%s\n" % (seq.id) )
+                #continue
         lowFile.close(); ambiguousFile.close(); hitsFile.close(); noHitsFile.close()        
     
     def dryRun(self):

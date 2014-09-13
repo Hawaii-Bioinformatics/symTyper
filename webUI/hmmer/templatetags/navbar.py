@@ -50,7 +50,7 @@ def navbar(context, id):
 
     if done:
         try:
-            biof = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.biom")
+            biof = os.path.join(settings.SYMTYPER_HOME, str(id), "breakdown.tsv")
             biom = open(biof)
             biom.next()
             samples = [l.split()[0].strip() for l in biom]

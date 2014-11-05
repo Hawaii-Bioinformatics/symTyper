@@ -33,6 +33,11 @@ def handleForm(fasta, sample, inputform, uid):
     ret = os.system("""%s -t %s stats --outputs_dir %s -i %s --out_file %s """%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, parentDir, fasta, os.path.join(parentDir,"outputfile")) )
     ret = os.system("""%s -t %s makeTSV --outputs_dir %s"""%(settings.SYMTYPER_PATH, settings.SYMTYPER_THREADS, parentDir)) 
 
+
+    ## At this point, we will want to take the blastResults/NEW/*.out and per, output file. select/generate fasta files of the sequences. ##   
+    os.system("extractFasta.py  blastResults/NEW/ .out %s"%(fasta))
+
+
     os.makedirs(imageDir)
     ret = os.system("""chgrp -R www-data %s """%(parentDir))
     ret = os.system("""ln -s %s %s """ % (os.path.join(parentDir, 'placementInfo'), imageDir))

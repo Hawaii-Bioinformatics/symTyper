@@ -97,7 +97,8 @@ def generateCladeBreakdown(samplesDescFile, parsedHmmerOutputDir, fileName, fiel
       # set of all the clades in the file            
       clades =  list(set([item for sublist in map(list, counts.values()) for item in sublist]))
       #Output Format
-      myFormat = "{0:10}"+" ".join(["{"+str(i+1)+":30}" for i in range(len(clades))])
+      #myFormat = "{0:10}"+" ".join(["{"+str(i+1)+":30}" for i in range(len(clades))])
+      myFormat = " ".join( ["{0:10}" ] + [ "{"+str(i+1)+":30}" for i in range(len(clades)) ])
       print >> cladeBreakdownFile, myFormat.format("sample", *clades)
 
 

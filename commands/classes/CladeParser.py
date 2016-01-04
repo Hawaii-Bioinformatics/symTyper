@@ -1,5 +1,6 @@
 #!/usr/bin/python
-import Bio
+
+from Bio import SearchIO
 import os 
 from Helpers import printVerbose
 
@@ -16,7 +17,7 @@ class CladeParser(object):
         ambiguousFile = open(os.path.join(self.outputDirPath, "AMBIGUOUS"), 'w')
         hitsFile = open(os.path.join(self.outputDirPath, "HIT"), 'w')
         noHitsFile = open(os.path.join(self.outputDirPath, "NOHIT"), 'w')
-        for seq in Bio.SearchIO.parse(self.inFile, 'hmmer3-text'):
+        for seq in SearchIO.parse(self.inFile, 'hmmer3-text'):
             if len(seq.hits) >= 1:
                 # DLS this check needs to be assured at least 1 hit exists!
                 aliLen = sum([len(f) for f in seq.hits[0].fragments])           
